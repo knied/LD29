@@ -71,6 +71,8 @@ public:
     void set_fullscreen(bool enabled);
     void set_size(int width, int height);
     Vector<int, 2> size() const;
+    int width() const;
+    int height() const;
 }; // SDLGLWindow
 
 ////////////////////////////////////////////////////////////////////////////////

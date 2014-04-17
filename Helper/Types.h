@@ -13,4 +13,6 @@
 
 typedef Vector<uint8_t, 4> Color4;
 
+typedef Vector<float, 3> Vector3;
+
 #endif

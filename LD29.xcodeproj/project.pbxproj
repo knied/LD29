@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D69AD18190053380058CC6C /* basic.vert in Resources */ = {isa = PBXBuildFile; fileRef = 6D69AD17190053380058CC6C /* basic.vert */; };
+		6D69AD1A190053450058CC6C /* basic.frag in Resources */ = {isa = PBXBuildFile; fileRef = 6D69AD19190053450058CC6C /* basic.frag */; };
 		6D9B8365190026E50003162D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B8364190026E50003162D /* Cocoa.framework */; };
 		6D9B836F190026E50003162D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B836D190026E50003162D /* InfoPlist.strings */; };
 		6D9B8371190026E50003162D /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B8370190026E50003162D /* main.mm */; };
@@ -47,6 +49,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6D69AD17190053380058CC6C /* basic.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = basic.vert; sourceTree = "<group>"; };
+		6D69AD19190053450058CC6C /* basic.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = basic.frag; sourceTree = "<group>"; };
 		6D9B8361190026E50003162D /* LD29.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LD29.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D9B8364190026E50003162D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		6D9B8367190026E50003162D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -124,6 +128,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6D69AD16190052F60058CC6C /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				6D69AD17190053380058CC6C /* basic.vert */,
+				6D69AD19190053450058CC6C /* basic.frag */,
+			);
+			name = Shaders;
+			path = ../Shaders;
+			sourceTree = "<group>";
+		};
 		6D9B8358190026E50003162D = {
 			isa = PBXGroup;
 			children = (
@@ -169,6 +183,7 @@
 		6D9B836A190026E50003162D /* LD29 */ = {
 			isa = PBXGroup;
 			children = (
+				6D69AD16190052F60058CC6C /* Shaders */,
 				6D9B83A2190028400003162D /* Math */,
 				6D9B8398190028050003162D /* Helper */,
 				6D9B836B190026E50003162D /* Supporting Files */,
@@ -332,6 +347,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D9B836F190026E50003162D /* InfoPlist.strings in Resources */,
+				6D69AD18190053380058CC6C /* basic.vert in Resources */,
+				6D69AD1A190053450058CC6C /* basic.frag in Resources */,
 				6D9B8375190026E50003162D /* Credits.rtf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

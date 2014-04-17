@@ -142,4 +142,12 @@ Vector<int, 2> SDLGLWindow::size() const {
     return size;
 }
 
+int SDLGLWindow::width() const {
+    return size()[0];
+}
+
+int SDLGLWindow::height() const {
+    return size()[1];
+}
+
 ////////////////////////////////////////////////////////////////////////////////
