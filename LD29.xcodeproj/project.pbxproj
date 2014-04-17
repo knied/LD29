@@ -9,15 +9,31 @@
 /* Begin PBXBuildFile section */
 		6D9B8365190026E50003162D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B8364190026E50003162D /* Cocoa.framework */; };
 		6D9B836F190026E50003162D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B836D190026E50003162D /* InfoPlist.strings */; };
-		6D9B8371190026E50003162D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B8370190026E50003162D /* main.m */; };
+		6D9B8371190026E50003162D /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B8370190026E50003162D /* main.mm */; };
 		6D9B8375190026E50003162D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B8373190026E50003162D /* Credits.rtf */; };
-		6D9B8378190026E50003162D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B8377190026E50003162D /* AppDelegate.m */; };
-		6D9B837B190026E50003162D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B8379190026E50003162D /* MainMenu.xib */; };
-		6D9B837D190026E50003162D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B837C190026E50003162D /* Images.xcassets */; };
 		6D9B8384190026E50003162D /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B8383190026E50003162D /* XCTest.framework */; };
 		6D9B8385190026E50003162D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B8364190026E50003162D /* Cocoa.framework */; };
 		6D9B838D190026E50003162D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B838B190026E50003162D /* InfoPlist.strings */; };
 		6D9B838F190026E50003162D /* LD29Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B838E190026E50003162D /* LD29Tests.m */; };
+		6D9B839F1900283B0003162D /* Components.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83991900283B0003162D /* Components.cpp */; };
+		6D9B83A01900283B0003162D /* GLClasses.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B839B1900283B0003162D /* GLClasses.cpp */; };
+		6D9B83A11900283B0003162D /* SDLClasses.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B839D1900283B0003162D /* SDLClasses.cpp */; };
+		6D9B83BD190028520003162D /* Math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83A3190028520003162D /* Math.cpp */; };
+		6D9B83BE190028520003162D /* MathUtility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83A5190028520003162D /* MathUtility.cpp */; };
+		6D9B83BF190028520003162D /* Matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83A7190028520003162D /* Matrix.cpp */; };
+		6D9B83C0190028520003162D /* Matrix2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83A9190028520003162D /* Matrix2.cpp */; };
+		6D9B83C1190028520003162D /* Matrix3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83AB190028520003162D /* Matrix3.cpp */; };
+		6D9B83C2190028520003162D /* Matrix4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83AD190028520003162D /* Matrix4.cpp */; };
+		6D9B83C3190028520003162D /* Plane3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83AF190028520003162D /* Plane3.cpp */; };
+		6D9B83C4190028520003162D /* Quaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83B1190028520003162D /* Quaternion.cpp */; };
+		6D9B83C5190028520003162D /* Transformation3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83B3190028520003162D /* Transformation3.cpp */; };
+		6D9B83C6190028520003162D /* Vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83B5190028520003162D /* Vector.cpp */; };
+		6D9B83C7190028520003162D /* Vector2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83B7190028520003162D /* Vector2.cpp */; };
+		6D9B83C8190028520003162D /* Vector3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83B9190028520003162D /* Vector3.cpp */; };
+		6D9B83C9190028520003162D /* Vector4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83BB190028520003162D /* Vector4.cpp */; };
+		6D9B83CD190028E70003162D /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B83CA190028E70003162D /* SDL2_image.framework */; };
+		6D9B83CF190028E70003162D /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B83CC190028E70003162D /* SDL2.framework */; };
+		6DF851C619004C85009A8BD6 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF851C519004C85009A8BD6 /* OpenGL.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,18 +54,50 @@
 		6D9B8369190026E50003162D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6D9B836C190026E50003162D /* LD29-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LD29-Info.plist"; sourceTree = "<group>"; };
 		6D9B836E190026E50003162D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		6D9B8370190026E50003162D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		6D9B8370190026E50003162D /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		6D9B8372190026E50003162D /* LD29-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LD29-Prefix.pch"; sourceTree = "<group>"; };
 		6D9B8374190026E50003162D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		6D9B8376190026E50003162D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		6D9B8377190026E50003162D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		6D9B837A190026E50003162D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		6D9B837C190026E50003162D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6D9B8382190026E50003162D /* LD29Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LD29Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D9B8383190026E50003162D /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		6D9B838A190026E50003162D /* LD29Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LD29Tests-Info.plist"; sourceTree = "<group>"; };
 		6D9B838C190026E50003162D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6D9B838E190026E50003162D /* LD29Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LD29Tests.m; sourceTree = "<group>"; };
+		6D9B83991900283B0003162D /* Components.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Components.cpp; sourceTree = "<group>"; };
+		6D9B839A1900283B0003162D /* Components.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Components.h; sourceTree = "<group>"; };
+		6D9B839B1900283B0003162D /* GLClasses.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLClasses.cpp; sourceTree = "<group>"; };
+		6D9B839C1900283B0003162D /* GLClasses.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLClasses.h; sourceTree = "<group>"; };
+		6D9B839D1900283B0003162D /* SDLClasses.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SDLClasses.cpp; sourceTree = "<group>"; };
+		6D9B839E1900283B0003162D /* SDLClasses.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLClasses.h; sourceTree = "<group>"; };
+		6D9B83A3190028520003162D /* Math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Math.cpp; sourceTree = "<group>"; };
+		6D9B83A4190028520003162D /* Math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Math.h; sourceTree = "<group>"; };
+		6D9B83A5190028520003162D /* MathUtility.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MathUtility.cpp; sourceTree = "<group>"; };
+		6D9B83A6190028520003162D /* MathUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MathUtility.h; sourceTree = "<group>"; };
+		6D9B83A7190028520003162D /* Matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Matrix.cpp; sourceTree = "<group>"; };
+		6D9B83A8190028520003162D /* Matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Matrix.h; sourceTree = "<group>"; };
+		6D9B83A9190028520003162D /* Matrix2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Matrix2.cpp; sourceTree = "<group>"; };
+		6D9B83AA190028520003162D /* Matrix2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Matrix2.h; sourceTree = "<group>"; };
+		6D9B83AB190028520003162D /* Matrix3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Matrix3.cpp; sourceTree = "<group>"; };
+		6D9B83AC190028520003162D /* Matrix3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Matrix3.h; sourceTree = "<group>"; };
+		6D9B83AD190028520003162D /* Matrix4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Matrix4.cpp; sourceTree = "<group>"; };
+		6D9B83AE190028520003162D /* Matrix4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Matrix4.h; sourceTree = "<group>"; };
+		6D9B83AF190028520003162D /* Plane3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Plane3.cpp; sourceTree = "<group>"; };
+		6D9B83B0190028520003162D /* Plane3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Plane3.h; sourceTree = "<group>"; };
+		6D9B83B1190028520003162D /* Quaternion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Quaternion.cpp; sourceTree = "<group>"; };
+		6D9B83B2190028520003162D /* Quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quaternion.h; sourceTree = "<group>"; };
+		6D9B83B3190028520003162D /* Transformation3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Transformation3.cpp; sourceTree = "<group>"; };
+		6D9B83B4190028520003162D /* Transformation3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Transformation3.h; sourceTree = "<group>"; };
+		6D9B83B5190028520003162D /* Vector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector.cpp; sourceTree = "<group>"; };
+		6D9B83B6190028520003162D /* Vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector.h; sourceTree = "<group>"; };
+		6D9B83B7190028520003162D /* Vector2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector2.cpp; sourceTree = "<group>"; };
+		6D9B83B8190028520003162D /* Vector2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector2.h; sourceTree = "<group>"; };
+		6D9B83B9190028520003162D /* Vector3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector3.cpp; sourceTree = "<group>"; };
+		6D9B83BA190028520003162D /* Vector3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector3.h; sourceTree = "<group>"; };
+		6D9B83BB190028520003162D /* Vector4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector4.cpp; sourceTree = "<group>"; };
+		6D9B83BC190028520003162D /* Vector4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector4.h; sourceTree = "<group>"; };
+		6D9B83CA190028E70003162D /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = Frameworks/SDL2_image.framework; sourceTree = "<group>"; };
+		6D9B83CC190028E70003162D /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		6D9B83D019002E990003162D /* Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
+		6DF851C519004C85009A8BD6 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +105,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6DF851C619004C85009A8BD6 /* OpenGL.framework in Frameworks */,
+				6D9B83CD190028E70003162D /* SDL2_image.framework in Frameworks */,
+				6D9B83CF190028E70003162D /* SDL2.framework in Frameworks */,
 				6D9B8365190026E50003162D /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -95,6 +146,9 @@
 		6D9B8363190026E50003162D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6DF851C519004C85009A8BD6 /* OpenGL.framework */,
+				6D9B83CA190028E70003162D /* SDL2_image.framework */,
+				6D9B83CC190028E70003162D /* SDL2.framework */,
 				6D9B8364190026E50003162D /* Cocoa.framework */,
 				6D9B8383190026E50003162D /* XCTest.framework */,
 				6D9B8366190026E50003162D /* Other Frameworks */,
@@ -115,10 +169,8 @@
 		6D9B836A190026E50003162D /* LD29 */ = {
 			isa = PBXGroup;
 			children = (
-				6D9B8376190026E50003162D /* AppDelegate.h */,
-				6D9B8377190026E50003162D /* AppDelegate.m */,
-				6D9B8379190026E50003162D /* MainMenu.xib */,
-				6D9B837C190026E50003162D /* Images.xcassets */,
+				6D9B83A2190028400003162D /* Math */,
+				6D9B8398190028050003162D /* Helper */,
 				6D9B836B190026E50003162D /* Supporting Files */,
 			);
 			path = LD29;
@@ -129,7 +181,7 @@
 			children = (
 				6D9B836C190026E50003162D /* LD29-Info.plist */,
 				6D9B836D190026E50003162D /* InfoPlist.strings */,
-				6D9B8370190026E50003162D /* main.m */,
+				6D9B8370190026E50003162D /* main.mm */,
 				6D9B8372190026E50003162D /* LD29-Prefix.pch */,
 				6D9B8373190026E50003162D /* Credits.rtf */,
 			);
@@ -152,6 +204,55 @@
 				6D9B838B190026E50003162D /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		6D9B8398190028050003162D /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				6D9B83991900283B0003162D /* Components.cpp */,
+				6D9B839A1900283B0003162D /* Components.h */,
+				6D9B839B1900283B0003162D /* GLClasses.cpp */,
+				6D9B839C1900283B0003162D /* GLClasses.h */,
+				6D9B839D1900283B0003162D /* SDLClasses.cpp */,
+				6D9B839E1900283B0003162D /* SDLClasses.h */,
+				6D9B83D019002E990003162D /* Types.h */,
+			);
+			name = Helper;
+			path = ../Helper;
+			sourceTree = "<group>";
+		};
+		6D9B83A2190028400003162D /* Math */ = {
+			isa = PBXGroup;
+			children = (
+				6D9B83A3190028520003162D /* Math.cpp */,
+				6D9B83A4190028520003162D /* Math.h */,
+				6D9B83A5190028520003162D /* MathUtility.cpp */,
+				6D9B83A6190028520003162D /* MathUtility.h */,
+				6D9B83A7190028520003162D /* Matrix.cpp */,
+				6D9B83A8190028520003162D /* Matrix.h */,
+				6D9B83A9190028520003162D /* Matrix2.cpp */,
+				6D9B83AA190028520003162D /* Matrix2.h */,
+				6D9B83AB190028520003162D /* Matrix3.cpp */,
+				6D9B83AC190028520003162D /* Matrix3.h */,
+				6D9B83AD190028520003162D /* Matrix4.cpp */,
+				6D9B83AE190028520003162D /* Matrix4.h */,
+				6D9B83AF190028520003162D /* Plane3.cpp */,
+				6D9B83B0190028520003162D /* Plane3.h */,
+				6D9B83B1190028520003162D /* Quaternion.cpp */,
+				6D9B83B2190028520003162D /* Quaternion.h */,
+				6D9B83B3190028520003162D /* Transformation3.cpp */,
+				6D9B83B4190028520003162D /* Transformation3.h */,
+				6D9B83B5190028520003162D /* Vector.cpp */,
+				6D9B83B6190028520003162D /* Vector.h */,
+				6D9B83B7190028520003162D /* Vector2.cpp */,
+				6D9B83B8190028520003162D /* Vector2.h */,
+				6D9B83B9190028520003162D /* Vector3.cpp */,
+				6D9B83BA190028520003162D /* Vector3.h */,
+				6D9B83BB190028520003162D /* Vector4.cpp */,
+				6D9B83BC190028520003162D /* Vector4.h */,
+			);
+			name = Math;
+			path = ../Math;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -231,9 +332,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D9B836F190026E50003162D /* InfoPlist.strings in Resources */,
-				6D9B837D190026E50003162D /* Images.xcassets in Resources */,
 				6D9B8375190026E50003162D /* Credits.rtf in Resources */,
-				6D9B837B190026E50003162D /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,8 +351,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D9B8378190026E50003162D /* AppDelegate.m in Sources */,
-				6D9B8371190026E50003162D /* main.m in Sources */,
+				6D9B83BF190028520003162D /* Matrix.cpp in Sources */,
+				6D9B83C3190028520003162D /* Plane3.cpp in Sources */,
+				6D9B83C8190028520003162D /* Vector3.cpp in Sources */,
+				6D9B83A11900283B0003162D /* SDLClasses.cpp in Sources */,
+				6D9B8371190026E50003162D /* main.mm in Sources */,
+				6D9B83C0190028520003162D /* Matrix2.cpp in Sources */,
+				6D9B83C4190028520003162D /* Quaternion.cpp in Sources */,
+				6D9B83BE190028520003162D /* MathUtility.cpp in Sources */,
+				6D9B83C7190028520003162D /* Vector2.cpp in Sources */,
+				6D9B839F1900283B0003162D /* Components.cpp in Sources */,
+				6D9B83C6190028520003162D /* Vector.cpp in Sources */,
+				6D9B83C1190028520003162D /* Matrix3.cpp in Sources */,
+				6D9B83C5190028520003162D /* Transformation3.cpp in Sources */,
+				6D9B83A01900283B0003162D /* GLClasses.cpp in Sources */,
+				6D9B83C9190028520003162D /* Vector4.cpp in Sources */,
+				6D9B83BD190028520003162D /* Math.cpp in Sources */,
+				6D9B83C2190028520003162D /* Matrix4.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,14 +404,6 @@
 				6D9B8374190026E50003162D /* en */,
 			);
 			name = Credits.rtf;
-			sourceTree = "<group>";
-		};
-		6D9B8379190026E50003162D /* MainMenu.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				6D9B837A190026E50003162D /* Base */,
-			);
-			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 		6D9B838B190026E50003162D /* InfoPlist.strings */ = {
@@ -386,6 +492,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LD29/LD29-Prefix.pch";
 				INFOPLIST_FILE = "LD29/LD29-Info.plist";
@@ -399,6 +509,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LD29/LD29-Prefix.pch";
 				INFOPLIST_FILE = "LD29/LD29-Info.plist";
@@ -466,6 +580,7 @@
 				6D9B8394190026E50003162D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6D9B8395190026E50003162D /* Build configuration list for PBXNativeTarget "LD29Tests" */ = {
 			isa = XCConfigurationList;
@@ -474,6 +589,7 @@
 				6D9B8397190026E50003162D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
