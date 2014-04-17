@@ -18,7 +18,6 @@
 #include <OpenGL/gl3.h>
 
 #include "Math.h"
-
 //#include "Image.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -702,6 +701,16 @@ class GLBindTexture : private GLInternal::GLBindTextureLock<active_texture> {
         return result;
     }*/
     
+    template<typename ColorType>
+    std::vector<uint8_t> pack(std::vector<ColorType> const& data) {
+        enum {pixel_size = GLInternal::GLBytePacker<ColorType>::size};
+        std::vector<uint8_t> result(data.size() * pixel_size);
+        for (int i = 0; i < data.size(); ++i) {
+                GLInternal::GLBytePacker<ColorType>::pack(&result[i * pixel_size], data[i]);
+        }
+        return result;
+    }
+    
 public:
     GLBindTexture(GLTexture& texture) : _texture(texture) {
         if (GLInternal::GLBindTextureLock<active_texture>::_bound_texture != 0) {
@@ -751,6 +760,20 @@ public:
         
         glTexImage2D(GL_TEXTURE_2D, level, internalformat, image_data.width(), image_data.height(), 0, format, type, &raw_data[0]);
     }*/
+    
+    template<typename ColorType>
+    void set(std::vector<ColorType> const& data,
+             GLint width, GLint height,
+             GLint internalformat, GLint level = 0) {
+        glActiveTexture(active_texture);
+        
+        std::vector<uint8_t> raw_data = pack(data);
+        
+        GLenum format = GLInternal::GLColorType<ColorType>::format;
+        GLenum type = GLInternal::GLColorType<ColorType>::type;
+        
+        glTexImage2D(GL_TEXTURE_2D, level, internalformat, width, height, 0, format, type, &raw_data[0]);
+    }
 }; // GLBindTexture
 
 ////////////////////////////////////////////////////////////////////////////////
