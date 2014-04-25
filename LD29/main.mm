@@ -8,7 +8,8 @@
 
 #include <Cocoa/Cocoa.h>
 #include "SDLClasses.h"
-#include "GLClasses.h"
+//#include "GLClasses.h"
+#include <OpenGL/gl.h>
 #include "Camera.h"
 #include "DelaunayTriangulation.h"
 #include <random>
@@ -37,10 +38,10 @@ std::vector<Vector2> smooth(float width, float height, std::vector<Vector2> cons
     return result;
 }
 
-struct Mesh {
+/*struct Mesh {
     GLBuffer buffer;
     GLVertexArray vertex_array;
-};
+};*/
 
 std::vector<Vector3> to_xy(std::vector<Vector2> const& shape) {
     std::vector<Vector3> result(shape.size());
@@ -67,7 +68,7 @@ std::vector<Vector2> circle(Vector2 center, float r, int d) {
     return points;
 }
 
-void init_world_mesh(Mesh& mesh) {
+void init_world_mesh(std::vector<Vector3>& mesh) {
     float const size = 10.0f;
     
     std::vector<Vector2> points;
@@ -83,23 +84,11 @@ void init_world_mesh(Mesh& mesh) {
     for (Vector2 const& p : points) {
         ppoints.push_back(new Point2{p});
     }
-    std::vector<Vector3> vertices;
-    std::vector<Color4> colors;
     VoronoiDiagram dt(ppoints);
-    dt.vertex_data(2.0f * size, 2.0f * size, vertices, colors);
-    
-    {
-        GLBindBuffer bound_buffer(mesh.buffer);
-        bound_buffer.set(0, (int)vertices.size(), GL_STATIC_DRAW, vertices, colors);
-    }
-    
-    {
-        GLBindVertexArray bound_vertex_array(mesh.vertex_array);
-        bound_vertex_array.set(mesh.buffer, {{ 0, 0, true }, { 1, 1, true }});
-    }
+    dt.vertex_data(2.0f * size, 2.0f * size, mesh);
 }
 
-void init_flag_mesh(Mesh& mesh, Color4 const& color) {
+void init_flag_mesh(std::vector<Vector3>& mesh) {
     float x = 0.1f;
     float y0 = 0.1f;
     float y1 = 0.3f;
@@ -115,35 +104,14 @@ void init_flag_mesh(Mesh& mesh, Color4 const& color) {
     shape = cut(shape, circle(Vector2(0.05f, 0.15f), 0.035f, 16));
     shape = cut(shape, circle(Vector2(0.05f, 0.25f), 0.035f, 16));
     
-    plot(shape);
-
-    
-    std::vector<Vector3> vertices = to_xy(triangulate(shape));
-    std::vector<Color4> colors(vertices.size(), color);
-    
-    {
-        GLBindBuffer bound_buffer(mesh.buffer);
-        bound_buffer.set(0, (int)vertices.size(), GL_STATIC_DRAW, vertices, colors);
-    }
-    
-    {
-        GLBindVertexArray bound_vertex_array(mesh.vertex_array);
-        bound_vertex_array.set(mesh.buffer, {{ 0, 0, true }, { 1, 1, true }});
-    }
+    mesh = to_xy(triangulate(shape));
 }
 
-void init_crown_mesh(Mesh& mesh, Color4 const& color) {
+void init_crown_mesh(std::vector<Vector3>& mesh) {
     float x0 = 0.1f;
     float y0 = 0.025f;
     float y1 = 0.05f;
     float x1 = 0.5f * x0;
-    /*Vector3 p0(-x0, 0.0f, 0.0f);
-    Vector3 p1(x0, 0.0f, 0.0f);
-    Vector3 p2(x0, y1, 0.0f);
-    Vector3 p3(x1, y0, 0.0f);
-    Vector3 p4(0.0f, y1, 0.0f);
-    Vector3 p5(-x1, y0, 0.0f);
-    Vector3 p6(-x0, y1, 0.0f);*/
     
     Vector2 p0(-x0, 0.0f);
     Vector2 p1(x0, 0.0f);
@@ -153,61 +121,60 @@ void init_crown_mesh(Mesh& mesh, Color4 const& color) {
     Vector2 p5(-x1, y0);
     Vector2 p6(-x0, y1);
     
-    std::vector<Vector3> vertices = to_xy(triangulate({p0, p1, p2, p3, p4, p5, p6}));
-    
-    /*std::vector<Vector3> vertices {
-        p0, p1, p5,
-        p0, p5, p6,
-        p1, p3, p5,
-        p3, p4, p5,
-        p1, p2, p3
-    };*/
-    std::vector<Color4> colors {
-        color, color, color,
-        color, color, color,
-        color, color, color,
-        color, color, color,
-        color, color, color
-    };
-    
-    {
-        GLBindBuffer bound_buffer(mesh.buffer);
-        bound_buffer.set(0, (int)vertices.size(), GL_STATIC_DRAW, vertices, colors);
-    }
-    
-    {
-        GLBindVertexArray bound_vertex_array(mesh.vertex_array);
-        bound_vertex_array.set(mesh.buffer, {{ 0, 0, true }, { 1, 1, true }});
-    }
+    mesh = to_xy(triangulate({p0, p1, p2, p3, p4, p5, p6}));
 }
 
-void init_dot_mesh(Mesh& mesh, Color4 const& color, float r, int d) {
-    std::vector<Vector3> points;
-    float dt = 2.0f * PI / (float)std::max(3, d);
-    for (int i = 0; i < std::max(3, d); ++i) {
-        points.push_back(Vector3(r * cosf(i * dt), r * sinf(i * dt), 0.0f));
+void init_dot_mesh(std::vector<Vector3>& mesh, float r, int d) {
+    mesh = to_xy(triangulate(circle(Vector2(), r, d)));
+}
+
+void init_gl(Camera const& camera, Color4 const& clear_color) {
+    glClearColor(clear_color[0]/255.0f, clear_color[1]/255.0f, clear_color[2]/255.0f, 1.0f);
+    
+    glEnable(GL_DEPTH_TEST);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glLoadMatrixf(&camera.projection()(0,0));
+}
+
+void draw(Camera& camera, Vector3 const& position, std::vector<Vector3> const& shape, Color4 const& color) {
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glLoadMatrixf(&camera.transformation().world_to_local()(0,0));
+    glTranslatef(position[0], position[1], position[2]);
+    
+    glBegin(GL_TRIANGLES);
+    
+    glColor3ub(color[0], color[1], color[2]);
+    
+    for (Vector3 const& v : shape) {
+        glVertex3fv(&v[0]);
     }
     
-    std::vector<Vector3> vertices;
-    std::vector<Color4> colors;
-    for (int i = 1; i < points.size()-1; ++i) {
-        vertices.push_back(points[0]);
-        vertices.push_back(points[i]);
-        vertices.push_back(points[i+1]);
-        colors.push_back(color);
-        colors.push_back(color);
-        colors.push_back(color);
+    glEnd();
+}
+
+void draw_sprite(Camera& camera, Vector3 const& position, Vector3 const& offset, std::vector<Vector3> const& shape, Color4 const& color) {
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glLoadMatrixf(&camera.transformation().world_to_local()(0,0));
+    glTranslatef(position[0], position[1], position[2]);
+    
+    Vector3 xz = vector_normal(camera.transformation().world_z() - Vector3(0.0f, 1.0f, 0.0f) * dot(Vector3(0.0f, 1.0f, 0.0f), camera.transformation().world_z()));
+    float angle = atan2f(xz[0], xz[2]);
+    glRotatef(angle * 180.0f / PI, 0.0f, 1.0f, 0.0f);
+    glTranslatef(offset[0], offset[1], offset[2]);
+    
+    glBegin(GL_TRIANGLES);
+    
+    glColor3ub(color[0], color[1], color[2]);
+    
+    for (Vector3 const& v : shape) {
+        glVertex3fv(&v[0]);
     }
     
-    {
-        GLBindBuffer bound_buffer(mesh.buffer);
-        bound_buffer.set(0, (int)vertices.size(), GL_STATIC_DRAW, vertices, colors);
-    }
-    
-    {
-        GLBindVertexArray bound_vertex_array(mesh.vertex_array);
-        bound_vertex_array.set(mesh.buffer, {{ 0, 0, true }, { 1, 1, true }});
-    }
+    glEnd();
 }
 
 int main(int argc, const char * argv[])
@@ -222,30 +189,26 @@ int main(int argc, const char * argv[])
     Camera camera;
     
     // setup world map
-    Mesh world_mesh;
+    std::vector<Vector3> world_mesh;
     init_world_mesh(world_mesh);
     
     // setup flag
-    Mesh flag_mesh;
-    init_flag_mesh(flag_mesh, Color4(200, 200, 200, 255));
+    std::vector<Vector3> flag_mesh;
+    init_flag_mesh(flag_mesh);
     
     // setup crown
-    Mesh crown_mesh;
-    init_crown_mesh(crown_mesh, Color4(255, 255, 64, 255));
+    std::vector<Vector3> crown_mesh;
+    init_crown_mesh(crown_mesh);
     
     // setup dot
-    Mesh dot_mesh;
-    init_dot_mesh(dot_mesh, Color4(255, 255, 64, 255), 0.025f, 16);
-    
-    GLProgram program;
-    program.load_shaders(system.load_text_file("basic.vert"),
-                         system.load_text_file("basic.frag"),
-                         { "vertex", "color" }, {});
-    GLint MVP_location = program.uniform_location("MVP");
+    std::vector<Vector3> dot_mesh;
+    init_dot_mesh(dot_mesh, 0.025f, 16);
     
     float x = 0.0f;
     float y = 0.0f;
     float d = 2.0f;
+    
+    init_gl(camera, Color4(100, 150, 100, 255));
     
     bool done = false;
     bool first = true;
@@ -265,8 +228,8 @@ int main(int argc, const char * argv[])
         if (x > -PI * 0.02f) {
             x = -PI * 0.02f;
         }
-        if (x < -PI * 0.5f) {
-            x = -PI * 0.5f;
+        if (x < -PI * 0.4f) {
+            x = -PI * 0.4f;
         }
         if (y < 0.0f) {
             y += 2.0f * PI;
@@ -284,12 +247,36 @@ int main(int argc, const char * argv[])
         camera.set_rotaton(x, y);
         camera.set_zoom(d);
         
-        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        draw(camera, Vector3(), world_mesh, Color4(80, 127, 80, 255));
+        draw_sprite(camera, Vector3(0.5f, 0.0f, 0.0f), Vector3(), flag_mesh, Color4(200, 200, 200, 255));
+        draw_sprite(camera, Vector3(0.5f, 0.31f, 0.0f), Vector3(), crown_mesh, Color4(200, 200, 64, 255));
+        draw_sprite(camera, Vector3(0.5f, 0.0f, 0.0f), Vector3(-0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        draw_sprite(camera, Vector3(0.5f, 0.0f, 0.0f), Vector3(0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        draw_sprite(camera, Vector3(0.5f, 0.0f, 0.0f), Vector3(-0.05f, 0.15f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        
+        draw_sprite(camera, Vector3(-0.5f, 0.0f, 0.0f), Vector3(), flag_mesh, Color4(32, 32, 32, 255));
+        draw_sprite(camera, Vector3(-0.5f, 0.31f, 0.0f), Vector3(), crown_mesh, Color4(200, 200, 64, 255));
+        draw_sprite(camera, Vector3(-0.5f, 0.0f, 0.0f), Vector3(-0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        draw_sprite(camera, Vector3(-0.5f, 0.0f, 0.0f), Vector3(0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        draw_sprite(camera, Vector3(-0.5f, 0.0f, 0.0f), Vector3(-0.05f, 0.15f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        
+        draw_sprite(camera, Vector3(0.0f, 0.0f, 0.5f), Vector3(), flag_mesh, Color4(255, 180, 180, 255));
+        draw_sprite(camera, Vector3(0.0f, 0.31f, 0.5f), Vector3(), crown_mesh, Color4(200, 200, 64, 255));
+        draw_sprite(camera, Vector3(0.0f, 0.0f, 0.5f), Vector3(-0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        draw_sprite(camera, Vector3(0.0f, 0.0f, 0.5f), Vector3(0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        draw_sprite(camera, Vector3(0.0f, 0.0f, 0.5f), Vector3(-0.05f, 0.15f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        
+        draw_sprite(camera, Vector3(0.0f, 0.0f, -0.5f), Vector3(), flag_mesh, Color4(180, 180, 255, 255));
+        draw_sprite(camera, Vector3(0.0f, 0.31f, -0.5f), Vector3(), crown_mesh, Color4(200, 200, 64, 255));
+        draw_sprite(camera, Vector3(0.0f, 0.0f, -0.5f), Vector3(-0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        draw_sprite(camera, Vector3(0.0f, 0.0f, -0.5f), Vector3(0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        draw_sprite(camera, Vector3(0.0f, 0.0f, -0.5f), Vector3(-0.05f, 0.15f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
         
         //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         
-        {
+        /*{
             GLBindProgram bound_program(program);
             
             bound_program.set_uniform(MVP_location, camera.projection() * camera.transformation().world_to_local());
@@ -319,7 +306,7 @@ int main(int argc, const char * argv[])
                 bound_vertex_array.set(dot_mesh.buffer, {{ 0, 0, true }, { 1, 1, true }});
                 bound_vertex_array.draw(GL_TRIANGLES);
             }
-            /*bound_program.set_uniform(MVP_location, camera.projection() * camera.transformation().world_to_local() * homogeneous_translation(Vector3(0.05f, 0.25f, 0.0f)));
+            bound_program.set_uniform(MVP_location, camera.projection() * camera.transformation().world_to_local() * homogeneous_translation(Vector3(0.05f, 0.25f, 0.0f)));
             {
                 GLBindVertexArray bound_vertex_array(dot_mesh.vertex_array);
                 bound_vertex_array.set(dot_mesh.buffer, {{ 0, 0, true }, { 1, 1, true }});
@@ -336,8 +323,8 @@ int main(int argc, const char * argv[])
                 GLBindVertexArray bound_vertex_array(dot_mesh.vertex_array);
                 bound_vertex_array.set(dot_mesh.buffer, {{ 0, 0, true }, { 1, 1, true }});
                 bound_vertex_array.draw(GL_TRIANGLES);
-            }*/
-        }
+            }
+        }*/
         
         window.swap();
         

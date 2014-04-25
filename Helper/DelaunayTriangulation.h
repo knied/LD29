@@ -154,10 +154,7 @@ public:
         }
     }
     
-    void vertex_data(float width, float height, std::vector<Vector3>& vertices, std::vector<Color4>& colors) const {
-        std::mt19937 eng;
-        std::uniform_int_distribution<uint8_t> dist(0, 255);
-        
+    void vertex_data(float width, float height, std::vector<Vector3>& vertices) const {
         for (VoronoiCell2* c : _cells) {
             std::vector<Vector2> convex;
             convex.resize(4);
@@ -186,17 +183,10 @@ public:
                 convex = tmp_convex;
             }
             
-            //Color4 color(dist(eng), dist(eng), dist(eng), 255);
-            Color4 color(80, 127, 80, 255);
-            
             for (int i = 1; i < (int)convex.size()-1; ++i) {
                 vertices.push_back(Vector3(convex[0][0], 0.0f, convex[0][1]));
                 vertices.push_back(Vector3(convex[i][0], 0.0f, convex[i][1]));
                 vertices.push_back(Vector3(convex[i+1][0], 0.0f, convex[i+1][1]));
-                
-                colors.push_back(color);
-                colors.push_back(color);
-                colors.push_back(color);
             }
         }
     }

@@ -98,7 +98,7 @@ Color4 SDLImage::pixel(Vector<int, 2> const& at) const {
 ////////////////////////////////////////////////////////////////////////////////
 
 SDLGLWindow::SDLGLWindow(SDLSystem& system, Vector<int, 2> const& size, std::string const& title) {
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
     //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
