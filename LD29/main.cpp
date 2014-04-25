@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 Kristof Niederholtmeyer. All rights reserved.
 //
 
-#include <Cocoa/Cocoa.h>
 #include "SDLClasses.h"
 #include <OpenGL/gl.h>
 #include "Camera.h"
@@ -173,7 +172,8 @@ void draw_sprite(Camera& camera, Vector3 const& position, Vector3 const& offset,
 
 int main(int argc, const char * argv[])
 {
-    SDLSystem system([[[NSBundle mainBundle] resourcePath] UTF8String]);
+    // [[[NSBundle mainBundle] resourcePath] UTF8String]
+    SDLSystem system("");
     SDLGLWindow window(system, {1024, 768}, "LD29");
     window.set_vsync(true);
     //window.set_fullscreen(true);

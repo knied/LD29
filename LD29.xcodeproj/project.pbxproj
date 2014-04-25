@@ -9,12 +9,9 @@
 /* Begin PBXBuildFile section */
 		6D9B8365190026E50003162D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B8364190026E50003162D /* Cocoa.framework */; };
 		6D9B836F190026E50003162D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B836D190026E50003162D /* InfoPlist.strings */; };
-		6D9B8371190026E50003162D /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B8370190026E50003162D /* main.mm */; };
+		6D9B8371190026E50003162D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B8370190026E50003162D /* main.cpp */; };
 		6D9B8375190026E50003162D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B8373190026E50003162D /* Credits.rtf */; };
-		6D9B8384190026E50003162D /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B8383190026E50003162D /* XCTest.framework */; };
 		6D9B8385190026E50003162D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B8364190026E50003162D /* Cocoa.framework */; };
-		6D9B838D190026E50003162D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B838B190026E50003162D /* InfoPlist.strings */; };
-		6D9B838F190026E50003162D /* LD29Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B838E190026E50003162D /* LD29Tests.m */; };
 		6D9B839F1900283B0003162D /* Components.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83991900283B0003162D /* Components.cpp */; };
 		6D9B83A11900283B0003162D /* SDLClasses.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B839D1900283B0003162D /* SDLClasses.cpp */; };
 		6D9B83BD190028520003162D /* Math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83A3190028520003162D /* Math.cpp */; };
@@ -55,14 +52,10 @@
 		6D9B8369190026E50003162D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6D9B836C190026E50003162D /* LD29-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LD29-Info.plist"; sourceTree = "<group>"; };
 		6D9B836E190026E50003162D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		6D9B8370190026E50003162D /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
+		6D9B8370190026E50003162D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		6D9B8372190026E50003162D /* LD29-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LD29-Prefix.pch"; sourceTree = "<group>"; };
 		6D9B8374190026E50003162D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		6D9B8382190026E50003162D /* LD29Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LD29Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		6D9B8383190026E50003162D /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		6D9B838A190026E50003162D /* LD29Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LD29Tests-Info.plist"; sourceTree = "<group>"; };
-		6D9B838C190026E50003162D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		6D9B838E190026E50003162D /* LD29Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LD29Tests.m; sourceTree = "<group>"; };
 		6D9B83991900283B0003162D /* Components.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Components.cpp; sourceTree = "<group>"; };
 		6D9B839A1900283B0003162D /* Components.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Components.h; sourceTree = "<group>"; };
 		6D9B839D1900283B0003162D /* SDLClasses.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SDLClasses.cpp; sourceTree = "<group>"; };
@@ -120,7 +113,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D9B8385190026E50003162D /* Cocoa.framework in Frameworks */,
-				6D9B8384190026E50003162D /* XCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,7 +123,6 @@
 			isa = PBXGroup;
 			children = (
 				6D9B836A190026E50003162D /* LD29 */,
-				6D9B8388190026E50003162D /* LD29Tests */,
 				6D9B8363190026E50003162D /* Frameworks */,
 				6D9B8362190026E50003162D /* Products */,
 			);
@@ -152,7 +143,6 @@
 				6DF851C519004C85009A8BD6 /* OpenGL.framework */,
 				6D9B83CC190028E70003162D /* SDL2.framework */,
 				6D9B8364190026E50003162D /* Cocoa.framework */,
-				6D9B8383190026E50003162D /* XCTest.framework */,
 				6D9B8366190026E50003162D /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -183,27 +173,9 @@
 			children = (
 				6D9B836C190026E50003162D /* LD29-Info.plist */,
 				6D9B836D190026E50003162D /* InfoPlist.strings */,
-				6D9B8370190026E50003162D /* main.mm */,
+				6D9B8370190026E50003162D /* main.cpp */,
 				6D9B8372190026E50003162D /* LD29-Prefix.pch */,
 				6D9B8373190026E50003162D /* Credits.rtf */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		6D9B8388190026E50003162D /* LD29Tests */ = {
-			isa = PBXGroup;
-			children = (
-				6D9B838E190026E50003162D /* LD29Tests.m */,
-				6D9B8389190026E50003162D /* Supporting Files */,
-			);
-			path = LD29Tests;
-			sourceTree = "<group>";
-		};
-		6D9B8389190026E50003162D /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				6D9B838A190026E50003162D /* LD29Tests-Info.plist */,
-				6D9B838B190026E50003162D /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -346,7 +318,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D9B838D190026E50003162D /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -363,7 +334,7 @@
 				6D9B83A11900283B0003162D /* SDLClasses.cpp in Sources */,
 				6DDECEB31903DD0D00F3B6B0 /* DelaunayTriangulation.cpp in Sources */,
 				6DDECEB01903BE5600F3B6B0 /* Camera.cpp in Sources */,
-				6D9B8371190026E50003162D /* main.mm in Sources */,
+				6D9B8371190026E50003162D /* main.cpp in Sources */,
 				6D9B83C0190028520003162D /* Matrix2.cpp in Sources */,
 				6D9B83C4190028520003162D /* Quaternion.cpp in Sources */,
 				6D9B83BE190028520003162D /* MathUtility.cpp in Sources */,
@@ -383,7 +354,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D9B838F190026E50003162D /* LD29Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,14 +382,6 @@
 				6D9B8374190026E50003162D /* en */,
 			);
 			name = Credits.rtf;
-			sourceTree = "<group>";
-		};
-		6D9B838B190026E50003162D /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				6D9B838C190026E50003162D /* en */,
-			);
-			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
