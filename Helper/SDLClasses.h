@@ -13,7 +13,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <SDL2/SDL.h>
-#include <SDL2_image/SDL_image.h>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -36,25 +35,6 @@ public:
     std::string const& resource_path() const;
     std::string load_text_file(std::string const& filename) const;
 }; // SDLSystem
-
-////////////////////////////////////////////////////////////////////////////////
-
-class SDLImage {
-    SDL_Surface* _surface;
-    
-public:
-    SDLImage(SDLSystem const& system, std::string const& filename);
-    ~SDLImage();
-    
-    int width() const;
-    int height() const;
-    Vector<int, 2> size() const;
-    
-    uint8_t const* data() const;
-    
-    Color4 pixel(int x, int y) const;
-    Color4 pixel(Vector<int, 2> const& at) const;
-}; // SDLImage
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -30,7 +30,6 @@
 		6D9B83C7190028520003162D /* Vector2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83B7190028520003162D /* Vector2.cpp */; };
 		6D9B83C8190028520003162D /* Vector3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83B9190028520003162D /* Vector3.cpp */; };
 		6D9B83C9190028520003162D /* Vector4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83BB190028520003162D /* Vector4.cpp */; };
-		6D9B83CD190028E70003162D /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B83CA190028E70003162D /* SDL2_image.framework */; };
 		6D9B83CF190028E70003162D /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B83CC190028E70003162D /* SDL2.framework */; };
 		6DDECEB01903BE5600F3B6B0 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DDECEAE1903BE5600F3B6B0 /* Camera.cpp */; };
 		6DDECEB31903DD0D00F3B6B0 /* DelaunayTriangulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DDECEB11903DD0D00F3B6B0 /* DelaunayTriangulation.cpp */; };
@@ -94,7 +93,6 @@
 		6D9B83BA190028520003162D /* Vector3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector3.h; sourceTree = "<group>"; };
 		6D9B83BB190028520003162D /* Vector4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector4.cpp; sourceTree = "<group>"; };
 		6D9B83BC190028520003162D /* Vector4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector4.h; sourceTree = "<group>"; };
-		6D9B83CA190028E70003162D /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = Frameworks/SDL2_image.framework; sourceTree = "<group>"; };
 		6D9B83CC190028E70003162D /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		6D9B83D019002E990003162D /* Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
 		6DDECEAE1903BE5600F3B6B0 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
@@ -112,7 +110,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6DF851C619004C85009A8BD6 /* OpenGL.framework in Frameworks */,
-				6D9B83CD190028E70003162D /* SDL2_image.framework in Frameworks */,
 				6D9B83CF190028E70003162D /* SDL2.framework in Frameworks */,
 				6D9B8365190026E50003162D /* Cocoa.framework in Frameworks */,
 			);
@@ -153,7 +150,6 @@
 			isa = PBXGroup;
 			children = (
 				6DF851C519004C85009A8BD6 /* OpenGL.framework */,
-				6D9B83CA190028E70003162D /* SDL2_image.framework */,
 				6D9B83CC190028E70003162D /* SDL2.framework */,
 				6D9B8364190026E50003162D /* Cocoa.framework */,
 				6D9B8383190026E50003162D /* XCTest.framework */,

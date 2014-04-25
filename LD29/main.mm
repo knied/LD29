@@ -8,7 +8,6 @@
 
 #include <Cocoa/Cocoa.h>
 #include "SDLClasses.h"
-//#include "GLClasses.h"
 #include <OpenGL/gl.h>
 #include "Camera.h"
 #include "DelaunayTriangulation.h"
@@ -37,11 +36,6 @@ std::vector<Vector2> smooth(float width, float height, std::vector<Vector2> cons
     }
     return result;
 }
-
-/*struct Mesh {
-    GLBuffer buffer;
-    GLVertexArray vertex_array;
-};*/
 
 std::vector<Vector3> to_xy(std::vector<Vector2> const& shape) {
     std::vector<Vector3> result(shape.size());
@@ -275,56 +269,6 @@ int main(int argc, const char * argv[])
         draw_sprite(camera, Vector3(0.0f, 0.0f, -0.5f), Vector3(-0.05f, 0.15f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
         
         //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-        
-        /*{
-            GLBindProgram bound_program(program);
-            
-            bound_program.set_uniform(MVP_location, camera.projection() * camera.transformation().world_to_local());
-            {
-                GLBindVertexArray bound_vertex_array(world_mesh.vertex_array);
-                bound_vertex_array.set(world_mesh.buffer, {{ 0, 0, true }, { 1, 1, true }});
-                bound_vertex_array.draw(GL_TRIANGLES);
-            }
-            
-            bound_program.set_uniform(MVP_location, camera.projection() * camera.transformation().world_to_local());
-            {
-                GLBindVertexArray bound_vertex_array(flag_mesh.vertex_array);
-                bound_vertex_array.set(flag_mesh.buffer, {{ 0, 0, true }, { 1, 1, true }});
-                bound_vertex_array.draw(GL_TRIANGLES);
-            }
-            
-            bound_program.set_uniform(MVP_location, camera.projection() * camera.transformation().world_to_local() * homogeneous_translation(Vector3(0.0f, 0.31f, 0.0f)));
-            {
-                GLBindVertexArray bound_vertex_array(crown_mesh.vertex_array);
-                bound_vertex_array.set(crown_mesh.buffer, {{ 0, 0, true }, { 1, 1, true }});
-                bound_vertex_array.draw(GL_TRIANGLES);
-            }
-            
-            bound_program.set_uniform(MVP_location, camera.projection() * camera.transformation().world_to_local() * homogeneous_translation(Vector3(-0.05f, 0.25f, 0.0f)));
-            {
-                GLBindVertexArray bound_vertex_array(dot_mesh.vertex_array);
-                bound_vertex_array.set(dot_mesh.buffer, {{ 0, 0, true }, { 1, 1, true }});
-                bound_vertex_array.draw(GL_TRIANGLES);
-            }
-            bound_program.set_uniform(MVP_location, camera.projection() * camera.transformation().world_to_local() * homogeneous_translation(Vector3(0.05f, 0.25f, 0.0f)));
-            {
-                GLBindVertexArray bound_vertex_array(dot_mesh.vertex_array);
-                bound_vertex_array.set(dot_mesh.buffer, {{ 0, 0, true }, { 1, 1, true }});
-                bound_vertex_array.draw(GL_TRIANGLES);
-            }
-            bound_program.set_uniform(MVP_location, camera.projection() * camera.transformation().world_to_local() * homogeneous_translation(Vector3(-0.05f, 0.15f, 0.0f)));
-            {
-                GLBindVertexArray bound_vertex_array(dot_mesh.vertex_array);
-                bound_vertex_array.set(dot_mesh.buffer, {{ 0, 0, true }, { 1, 1, true }});
-                bound_vertex_array.draw(GL_TRIANGLES);
-            }
-            bound_program.set_uniform(MVP_location, camera.projection() * camera.transformation().world_to_local() * homogeneous_translation(Vector3(0.05f, 0.15f, 0.0f)));
-            {
-                GLBindVertexArray bound_vertex_array(dot_mesh.vertex_array);
-                bound_vertex_array.set(dot_mesh.buffer, {{ 0, 0, true }, { 1, 1, true }});
-                bound_vertex_array.draw(GL_TRIANGLES);
-            }
-        }*/
         
         window.swap();
         

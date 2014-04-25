@@ -16,10 +16,8 @@
 SDLSystem::SDLSystem(std::string const& resource_path)
 : _resource_path(resource_path + "/") {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) throw std::runtime_error("Error: SDL_Init");
-    if (IMG_Init(IMG_INIT_PNG) < 0) throw std::runtime_error("Error: IMG_Init");
 }
 SDLSystem::~SDLSystem() {
-    IMG_Quit();
     SDL_Quit();
 }
 
@@ -62,45 +60,9 @@ std::string SDLSystem::load_text_file(std::string const& filename) const {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-SDLImage::SDLImage(SDLSystem const& system, std::string const& filename) {
-    _surface = IMG_Load((system.resource_path() + filename).c_str());
-}
-
-SDLImage::~SDLImage() {
-    SDL_FreeSurface(_surface);
-}
-
-int SDLImage::width() const {
-    return _surface->w;
-}
-
-int SDLImage::height() const {
-    return _surface->h;
-}
-
-Vector<int, 2> SDLImage::size() const {
-    return Vector<int, 2>(_surface->w, _surface->h);
-}
-
-uint8_t const* SDLImage::data() const {
-    return (uint8_t const*)_surface->pixels;
-}
-
-Color4 SDLImage::pixel(int x, int y) const {
-    uint8_t const* p = ((uint8_t const*)_surface->pixels) + 4 * (y * width() + x);
-    return Color4(*(p + 0), *(p + 1), *(p + 2), *(p + 3));
-}
-
-Color4 SDLImage::pixel(Vector<int, 2> const& at) const {
-    return pixel(at[0], at[1]);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
 SDLGLWindow::SDLGLWindow(SDLSystem& system, Vector<int, 2> const& size, std::string const& title) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
