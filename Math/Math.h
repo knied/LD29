@@ -67,6 +67,10 @@ Type clamp(Type const& value, Type const& lower, Type const& upper) {
     return value;
 }
 
+template <typename T> int sign(T val) {
+    return (T(0) < val) - (val < T(0));
+}
+
 // random
 void random_seed(unsigned int seed);
 int random(int from, int to);
@@ -300,9 +304,9 @@ void parametric(Vector<Type, N> const& a, Vector<Type, N> const& b, Vector<Type,
 template <typename Type, int N>
 void parametric(Vector<Type, N> const& a, Vector<Type, N> const& b, Vector<Type, N> const& c,
                 Vector<Type, N> const& p, Type& a0, Type& a1, Type& a2) {
-    Vector<Type, 3> u = b - a;
-    Vector<Type, 3> v = c - a;
-    Vector<Type, 3> w = p - a;
+    Vector<Type, N> u = b - a;
+    Vector<Type, N> v = c - a;
+    Vector<Type, N> w = p - a;
     Type uv = dot(u, v);
     Type uu = dot(u, u);
     Type vv = dot(v, v);

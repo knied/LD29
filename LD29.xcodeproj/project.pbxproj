@@ -35,6 +35,9 @@
 		6D9B83C9190028520003162D /* Vector4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83BB190028520003162D /* Vector4.cpp */; };
 		6D9B83CD190028E70003162D /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B83CA190028E70003162D /* SDL2_image.framework */; };
 		6D9B83CF190028E70003162D /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B83CC190028E70003162D /* SDL2.framework */; };
+		6DDECEB01903BE5600F3B6B0 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DDECEAE1903BE5600F3B6B0 /* Camera.cpp */; };
+		6DDECEB31903DD0D00F3B6B0 /* DelaunayTriangulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DDECEB11903DD0D00F3B6B0 /* DelaunayTriangulation.cpp */; };
+		6DDECEB6190435FC00F3B6B0 /* Geometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DDECEB4190435FC00F3B6B0 /* Geometry.cpp */; };
 		6DF851C619004C85009A8BD6 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF851C519004C85009A8BD6 /* OpenGL.framework */; };
 /* End PBXBuildFile section */
 
@@ -101,6 +104,12 @@
 		6D9B83CA190028E70003162D /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = Frameworks/SDL2_image.framework; sourceTree = "<group>"; };
 		6D9B83CC190028E70003162D /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		6D9B83D019002E990003162D /* Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
+		6DDECEAE1903BE5600F3B6B0 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		6DDECEAF1903BE5600F3B6B0 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
+		6DDECEB11903DD0D00F3B6B0 /* DelaunayTriangulation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DelaunayTriangulation.cpp; sourceTree = "<group>"; };
+		6DDECEB21903DD0D00F3B6B0 /* DelaunayTriangulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DelaunayTriangulation.h; sourceTree = "<group>"; };
+		6DDECEB4190435FC00F3B6B0 /* Geometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Geometry.cpp; sourceTree = "<group>"; };
+		6DDECEB5190435FC00F3B6B0 /* Geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Geometry.h; sourceTree = "<group>"; };
 		6DF851C519004C85009A8BD6 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -224,6 +233,8 @@
 		6D9B8398190028050003162D /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				6DDECEAE1903BE5600F3B6B0 /* Camera.cpp */,
+				6DDECEAF1903BE5600F3B6B0 /* Camera.h */,
 				6D9B83991900283B0003162D /* Components.cpp */,
 				6D9B839A1900283B0003162D /* Components.h */,
 				6D9B839B1900283B0003162D /* GLClasses.cpp */,
@@ -231,6 +242,10 @@
 				6D9B839D1900283B0003162D /* SDLClasses.cpp */,
 				6D9B839E1900283B0003162D /* SDLClasses.h */,
 				6D9B83D019002E990003162D /* Types.h */,
+				6DDECEB11903DD0D00F3B6B0 /* DelaunayTriangulation.cpp */,
+				6DDECEB21903DD0D00F3B6B0 /* DelaunayTriangulation.h */,
+				6DDECEB4190435FC00F3B6B0 /* Geometry.cpp */,
+				6DDECEB5190435FC00F3B6B0 /* Geometry.h */,
 			);
 			name = Helper;
 			path = ../Helper;
@@ -372,6 +387,8 @@
 				6D9B83C3190028520003162D /* Plane3.cpp in Sources */,
 				6D9B83C8190028520003162D /* Vector3.cpp in Sources */,
 				6D9B83A11900283B0003162D /* SDLClasses.cpp in Sources */,
+				6DDECEB31903DD0D00F3B6B0 /* DelaunayTriangulation.cpp in Sources */,
+				6DDECEB01903BE5600F3B6B0 /* Camera.cpp in Sources */,
 				6D9B8371190026E50003162D /* main.mm in Sources */,
 				6D9B83C0190028520003162D /* Matrix2.cpp in Sources */,
 				6D9B83C4190028520003162D /* Quaternion.cpp in Sources */,
@@ -383,6 +400,7 @@
 				6D9B83C5190028520003162D /* Transformation3.cpp in Sources */,
 				6D9B83A01900283B0003162D /* GLClasses.cpp in Sources */,
 				6D9B83C9190028520003162D /* Vector4.cpp in Sources */,
+				6DDECEB6190435FC00F3B6B0 /* Geometry.cpp in Sources */,
 				6D9B83BD190028520003162D /* Math.cpp in Sources */,
 				6D9B83C2190028520003162D /* Matrix4.cpp in Sources */,
 			);

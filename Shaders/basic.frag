@@ -1,7 +1,7 @@
-#version 330 core
+#version 120
 
-layout(location = 0) out vec4 frag_color;
+varying vec4 v_color;
 
 void main() {
-    frag_color = vec4(0.2f, 0.5f, 0.2f, 1.0f);
+    gl_FragColor = v_color;
 }

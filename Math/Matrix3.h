@@ -77,19 +77,19 @@ struct Matrix<Type,3,3> {
     }
 };
     
-    template<typename Type>
-    inline Type det(const Matrix<Type,3,3>& a) {
-        return  a(0,0) * (a(1,1) * a(2,2) - a(1,2) * a(2,1)) +
-                a(0,1) * (a(1,2) * a(2,0) - a(1,0) * a(2,2)) +
-                a(0,2) * (a(1,0) * a(2,1) - a(2,2) * a(2,0));
-    }
-    
-    template<typename Type>
-    inline Matrix<Type,3,3> inverse(const Matrix<Type,3,3>& a) {
-        Matrix<Type,3,3> result(a(1,1) * a(2,2) - a(1,2) * a(2,1), a(0,2) * a(2,1) - a(0,1) * a(2,2), a(0,1) * a(1,2) - a(0,2) * a(1,1),
-                                a(1,2) * a(2,0) - a(1,0) * a(2,2), a(0,0) * a(2,2) - a(0,2) * a(2,0), a(0,2) * a(1,0) - a(0,0) * a(1,2),
-                                a(1,0) * a(2,1) - a(1,1) * a(2,0), a(0,1) * a(2,0) - a(0,0) * a(2,1), a(0,0) * a(1,1) - a(0,1) * a(1,0));
-        return result / det(a);
-    }
+template<typename Type>
+inline Type det(const Matrix<Type,3,3>& a) {
+    return  a(0,0) * (a(1,1) * a(2,2) - a(1,2) * a(2,1)) +
+    a(0,1) * (a(1,2) * a(2,0) - a(1,0) * a(2,2)) +
+    a(0,2) * (a(1,0) * a(2,1) - a(1,1) * a(2,0));
+}
+
+template<typename Type>
+inline Matrix<Type,3,3> inverse(const Matrix<Type,3,3>& a) {
+    Matrix<Type,3,3> result(a(1,1) * a(2,2) - a(1,2) * a(2,1), a(0,2) * a(2,1) - a(0,1) * a(2,2), a(0,1) * a(1,2) - a(0,2) * a(1,1),
+                            a(1,2) * a(2,0) - a(1,0) * a(2,2), a(0,0) * a(2,2) - a(0,2) * a(2,0), a(0,2) * a(1,0) - a(0,0) * a(1,2),
+                            a(1,0) * a(2,1) - a(1,1) * a(2,0), a(0,1) * a(2,0) - a(0,0) * a(2,1), a(0,0) * a(1,1) - a(0,1) * a(1,0));
+    return result / det(a);
+}
 
 #endif /* defined(__game__Matrix3__) */
