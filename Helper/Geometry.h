@@ -47,6 +47,10 @@ struct VoronoiCell2 {
     std::vector<Point2*> n;
     std::vector<Vector3> vertices;
     bool draw = true;
+    int building = 0;
+    int type = 0;
+    int coins = 0;
+    int spawn = 0;
 }; // VoronoiCell2
 
 // next index in counter clockwise direction

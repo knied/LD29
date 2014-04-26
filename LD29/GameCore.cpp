@@ -106,6 +106,68 @@ void init_indicator_mesh(std::vector<Vector3>& mesh) {
     mesh = to_xy(triangulate({p0, p1, p2, p3}));
 }
 
+void init_mine_mesh(std::vector<Vector3>& base_mesh, std::vector<Vector3>& wheel_mesh) {
+    float d = 0.025f;
+    float x0 = 1.5f * d;
+    float x1 = 2.0f * d;
+    float y0 = 3.0f * d;
+    float y1 = 4.0f * d;
+    float z0 = d * 0.25f;
+    float z1 = d;
+    
+    Vector3 p0(-x1, 0.0f, z1);
+    Vector3 p1(-x0, 0.0f, z1);
+    Vector3 p2(-x0, y0, z0);
+    Vector3 p3(x0, y0, z0);
+    Vector3 p4(x0, 0.0f, z1);
+    Vector3 p5(x1, 0.0f, z1);
+    Vector3 p6(x1, y1, 0.0f);
+    Vector3 p7(-x1, y1, 0.0f);
+    
+    Vector3 q0(-x1, 0.0f, -z1);
+    Vector3 q1(-x0, 0.0f, -z1);
+    Vector3 q2(-x0, y0, -z0);
+    Vector3 q3(x0, y0, -z0);
+    Vector3 q4(x0, 0.0f, -z1);
+    Vector3 q5(x1, 0.0f, -z1);
+    Vector3 q6(x1, y1, 0.0f);
+    Vector3 q7(-x1, y1, 0.0f);
+    
+    base_mesh = {
+        p0, p1, p2, p0, p2, p7, p2, p3, p6, p2, p6, p7, p3, p4, p5, p3, p5, p6,
+        q0, q1, q2, q0, q2, q7, q2, q3, q6, q2, q6, q7, q3, q4, q5, q3, q5, q6
+    };
+    
+    std::vector<Vector2> wheel = circle(Vector2(), 3.0f * d, 16);
+    wheel = cut(wheel, circle(Vector2(), 2.5f * d, 16));
+    
+    wheel_mesh = to_xy(triangulate(wheel));
+    
+    Vector3 w0(-d * 0.25f, -2.75f * d, 0.0f);
+    Vector3 w1(d * 0.25f, -2.75f * d, 0.0f);
+    Vector3 w2(d * 0.25f, 2.75f * d, 0.0f);
+    Vector3 w3(-d * 0.25f, 2.75f * d, 0.0f);
+    
+    Vector3 w4(-d * 2.75f, -0.25f * d, 0.0f);
+    Vector3 w5(d * 2.75f, -0.25f * d, 0.0f);
+    Vector3 w6(d * 2.75f, 0.25f * d, 0.0f);
+    Vector3 w7(-d * 2.75f, 0.25f * d, 0.0f);
+    
+    wheel_mesh.push_back(w0);
+    wheel_mesh.push_back(w1);
+    wheel_mesh.push_back(w2);
+    wheel_mesh.push_back(w0);
+    wheel_mesh.push_back(w2);
+    wheel_mesh.push_back(w3);
+    
+    wheel_mesh.push_back(w4);
+    wheel_mesh.push_back(w5);
+    wheel_mesh.push_back(w6);
+    wheel_mesh.push_back(w4);
+    wheel_mesh.push_back(w6);
+    wheel_mesh.push_back(w7);
+}
+
 void init_gl(Camera const& camera, Color4 const& clear_color) {
     glClearColor(clear_color[0]/255.0f, clear_color[1]/255.0f, clear_color[2]/255.0f, 1.0f);
     
@@ -172,13 +234,13 @@ bool cursor_on_shape(Matrix4 const& model_view_projection, std::vector<Vector3> 
 
 GameCore::GameCore(int view_width, int view_height)
 : _view_width(view_width), _view_height(view_height), _camera_zoom(0.0f), _second_timer(0.0f) {
-    float const size = 10.0f;
+    float const size = 7.5f;
     
     std::vector<Vector2> points;
-    std::mt19937 eng;
+    
     std::uniform_real_distribution<float> dist(-size*0.5f,size*0.5f);
-    for (int i = 0; i < 500; ++i) {
-        points.push_back(Vector2(dist(eng), dist(eng)));
+    for (int i = 0; i < 200; ++i) {
+        points.push_back(Vector2(dist(_rand_engine), dist(_rand_engine)));
     }
     for (int i = 0; i < 10; ++i) {
         points = smooth(size, size, points);
@@ -191,15 +253,38 @@ GameCore::GameCore(int view_width, int view_height)
     _world = new VoronoiDiagram(size, size, ppoints);
     
     _selected_cell = 0;
-    _player.location = 0;
-    _player.coins = 4;
+    std::uniform_int_distribution<int> dist3(0, 8);
     float cutoff = 0.5f * size - 0.5f;
     for (VoronoiCell2* c : _world->cells()) {
         if (c->p->l[0] < -cutoff || c->p->l[0] > cutoff || c->p->l[1] < -cutoff || c->p->l[1] > cutoff) {
             c->draw = false;
         } else {
-            if (!_player.location) {
-                _player.location = c;
+            if (dist3(_rand_engine) == 0) {
+                c->building = 1;
+            } else if (dist3(_rand_engine) < 2) {
+                c->type = 1;
+            }
+            if (c->building == 1) {
+                c->spawn = dist3(_rand_engine);
+            }
+        }
+    }
+    _current_king = 0;
+    _turn_state = 0;
+    _turn_timer = 0.0f;
+    
+    std::uniform_int_distribution<uint8_t> dist2(0, 200);
+    _kings.resize(4);
+    int i = 0;
+    for (VoronoiCell2* c : _world->cells()) {
+        if (c->draw && c->building == 1) {
+            _kings[i].location = c;
+            _kings[i].destination = c;
+            _kings[i].coins = 0;
+            _kings[i].color = Color4(dist2(_rand_engine), dist2(_rand_engine), dist2(_rand_engine), 255);
+            i++;
+            if (i >= 4) {
+                break;
             }
         }
     }
@@ -208,8 +293,9 @@ GameCore::GameCore(int view_width, int view_height)
     init_dot_mesh(_coin_mesh, 0.025f, 16);
     init_crown_mesh(_crown_mesh);
     init_indicator_mesh(_indicator_mesh);
+    init_mine_mesh(_mine_base_mesh, _mine_wheel_mesh);
     
-    init_gl(_camera, Color4(100, 150, 100, 255));
+    init_gl(_camera, Color4(100, 150, 150, 255));
     
     _projection = _camera.projection();
 }
@@ -233,8 +319,9 @@ void GameCore::mouse_down(MouseButton button, float x, float y) {
 }
 
 void GameCore::mouse_up(MouseButton button, float x, float y) {
-    if (button == MBLeft && _selected_cell) {
-        _player.location = _selected_cell;
+    if (_current_king == 0 && button == MBLeft && _selected_cell) {
+        _kings[0].destination = _selected_cell;
+        next_turn_state();
     }
 }
 
@@ -262,7 +349,7 @@ void GameCore::update_camera(float dt) {
         _camera_zoom = 5.0f;
     }
     
-    _target_camera_position = Vector3(_player.location->p->l[0], 0.0f, _player.location->p->l[1]);
+    _target_camera_position = Vector3(_kings[_current_king].location->p->l[0], 0.0f, _kings[_current_king].location->p->l[1]);
     
     _camera.set_rotaton(_camera_rotation[0], _camera_rotation[1]);
     _camera.set_zoom(_camera_zoom);
@@ -279,9 +366,42 @@ void GameCore::update_camera(float dt) {
     _sprite_rotation = homogeneous_rotation(Quaternion<float>(Vector3(0.0f, 1.0f, 0.0f), angle));
 }
 
+void GameCore::next_turn_state() {
+    if (_turn_state == 2) {
+        _kings[_current_king].location = _kings[_current_king].destination;
+    }
+    
+    _turn_timer = 0.0f;
+    _turn_state++;
+    if (_turn_state > 3) {
+        _turn_state = 0;
+        _current_king = _current_king+1 < _kings.size() ? _current_king+1 : 0;
+    }
+    
+    // update mines
+    if (_current_king == 0 && _turn_state == 0) {
+        for (VoronoiCell2* c : _world->cells()) {
+            if (c->building == 1 && c->coins == 0) {
+                c->spawn++;
+                if (c->spawn >= 8) {
+                    c->spawn = 0;
+                    c->coins = 1;
+                }
+            }
+        }
+    }
+    
+    std::cout << "state: " << _turn_state << std::endl;
+    std::cout << "king: " << _current_king << std::endl;
+}
+
 void GameCore::draw_king(King const& king) {
-    Matrix4 model = homogeneous_translation(Vector3(king.location->p->l[0], 0.0f, king.location->p->l[1]));
-    draw(_view * model * _sprite_rotation, _flag_mesh, Color4(200, 200, 200, 255));
+    Vector3 position = linear_interpolation(Vector3(king.location->p->l[0], 0.0f, king.location->p->l[1]),
+                                            Vector3(king.destination->p->l[0], 0.0f, king.destination->p->l[1]),
+                                            _turn_timer);
+    
+    Matrix4 model = homogeneous_translation(position);
+    draw(_view * model * _sprite_rotation, _flag_mesh, king.color);
     Matrix4 offset = homogeneous_translation(Vector3(0.0f, 0.31f, 0.0f));
     draw(_view * model * _sprite_rotation * offset, _crown_mesh, Color4(200, 200, 64, 255));
     if (king.coins > 0) {
@@ -302,6 +422,28 @@ void GameCore::draw_king(King const& king) {
     }
 }
 
+void GameCore::update_king(float dt, King& king) {
+    if (king.location != king.destination) {
+        _turn_timer += 4.0f * dt;
+        if (_turn_timer > 1.0f) {
+            _turn_timer = 0.0f;
+            king.location = king.destination;
+        }
+    }
+}
+
+void GameCore::king_ai(King& king) {
+    std::vector<VoronoiCell2*> valid_destinations;
+    for (VoronoiCell2* c : _world->cells()) {
+        if (c->draw && c->type == 0 && std::find(king.location->n.begin(), king.location->n.end(), c->p) != king.location->n.end()) {
+            valid_destinations.push_back(c);
+        }
+    }
+    
+    std::uniform_int_distribution<int> dist(0, (int)valid_destinations.size()-1);
+    king.destination = valid_destinations[dist(_rand_engine)];
+}
+
 void GameCore::update(float dt) {
     _second_timer += dt;
     if (_second_timer > 1.0f) {
@@ -314,14 +456,13 @@ void GameCore::update(float dt) {
     
     _selected_cell = 0;
     for (VoronoiCell2* c : _world->cells()) {
-        if (c->draw) {
+        if (c->draw && c->type == 0) {
             Color4 color(80, 127, 80, 255);
-            if (std::find(_player.location->n.begin(),
-                          _player.location->n.end(),
-                          c->p) != _player.location->n.end()) {
+            if (std::find(_kings[_current_king].location->n.begin(),
+                          _kings[_current_king].location->n.end(),
+                          c->p) != _kings[_current_king].location->n.end()) {
                 color = Color4(120, 167, 120, 255);
-                if (cursor_on_shape(_view_projection, c->vertices, _cursor)) {
-                    //std::cout << "on" << std::endl;
+                if (_current_king == 0 && _turn_state == 1 && cursor_on_shape(_view_projection, c->vertices, _cursor)) {
                     _selected_cell = c;
                 }
             }
@@ -329,11 +470,52 @@ void GameCore::update(float dt) {
         }
     }
     
+    for (VoronoiCell2* c : _world->cells()) {
+        if (c->draw) {
+            if (c->building == 1) {
+                Matrix4 model = homogeneous_translation(Vector3(c->p->l[0] + 0.1f, 0.0f, c->p->l[1]));
+                draw(_view * model * _sprite_rotation, _mine_base_mesh, Color4(40, 40, 40, 255));
+                Matrix4 offset = homogeneous_translation(Vector3(0.0f, 0.1f, 0.0f));
+                Matrix4 rot = homogeneous_rotation(Quaternion<float>(Vector3(0.0f, 0.0f, 1.0f), _second_timer * 2.0f * PI));
+                draw(_view * model * _sprite_rotation * offset * rot, _mine_wheel_mesh, Color4(40, 40, 40, 255));
+            }
+            
+            if (c->coins > 0) {
+                Matrix4 model = homogeneous_translation(Vector3(c->p->l[0] + 0.1f, 0.0f, c->p->l[1]));
+                Matrix4 offset = homogeneous_translation(Vector3(0.0f, 0.25f + 0.025f * sinf(_second_timer * 2.0f * PI), 0.0f));
+                draw(_view * model * _sprite_rotation * offset, _coin_mesh, Color4(200, 200, 64, 255));
+            }
+        }
+    }
+    
     // draw indicator
-    if (_selected_cell) {
+    if (_current_king == 0 && _turn_state == 1 && _selected_cell) {
         Matrix4 model = homogeneous_translation(Vector3(_selected_cell->p->l[0], 0.0f, _selected_cell->p->l[1]));
         draw(_view * model * _sprite_rotation * homogeneous_translation(Vector3(0.0f, 0.05f + 0.05f * sinf(_second_timer * 2.0f * PI), 0.0f)), _indicator_mesh, Color4(200, 100, 100, 255));
     }
     
-    draw_king(_player);
+    if (_turn_state == 2) {
+        _turn_timer += 6.0f * dt;
+    }
+    if (_turn_state == 0 || _turn_state == 3) {
+        _turn_timer += 2.0f * dt;
+    }
+    if (_turn_timer > 1.0f) {
+        next_turn_state();
+    }
+    
+    if (_turn_state == 1) {
+        if (_current_king != 0) {
+            king_ai(_kings[_current_king]);
+            next_turn_state();
+        }
+    }
+    
+    for (King& k : _kings) {
+        if (k.location->coins > 0) {
+            k.location->coins = 0;
+            k.coins++;
+        }
+        draw_king(k);
+    }
 }

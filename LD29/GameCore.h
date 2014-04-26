@@ -21,7 +21,9 @@ typedef enum {
 
 struct King {
     VoronoiCell2* location;
+    VoronoiCell2* destination;
     int coins;
+    Color4 color;
 };
 
 class GameCore {
@@ -33,11 +35,15 @@ class GameCore {
     float _camera_zoom;
     Vector3 _target_camera_position;
     
+    std::mt19937 _rand_engine;
+    
     VoronoiDiagram* _world;
     std::vector<Vector3> _flag_mesh;
     std::vector<Vector3> _coin_mesh;
     std::vector<Vector3> _crown_mesh;
     std::vector<Vector3> _indicator_mesh;
+    std::vector<Vector3> _mine_base_mesh;
+    std::vector<Vector3> _mine_wheel_mesh;
     
     Vector2 _cursor;
     
@@ -49,8 +55,14 @@ class GameCore {
     
     void update_camera(float dt);
     void draw_king(King const& king);
+    void update_king(float dt, King& king);
+    void king_ai(King& king);
     
-    King _player;
+    std::vector<King> _kings;
+    int _current_king;
+    int _turn_state;
+    float _turn_timer;
+    void next_turn_state();
     
     VoronoiCell2* _selected_cell;
     
