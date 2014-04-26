@@ -39,11 +39,19 @@ class GameCore {
     
     VoronoiDiagram* _world;
     std::vector<Vector3> _flag_mesh;
+    std::vector<Vector3> _small_flag_mesh;
     std::vector<Vector3> _coin_mesh;
     std::vector<Vector3> _crown_mesh;
     std::vector<Vector3> _indicator_mesh;
     std::vector<Vector3> _mine_base_mesh;
     std::vector<Vector3> _mine_wheel_mesh;
+
+    Color4 _kingdom_colors[4];
+    Color4 _kingdom_map_colors[4];
+    Color4 _background_color;
+    Color4 _cell_color;
+    Color4 _indicator_color;
+    Color4 _gold_color;
     
     Vector2 _cursor;
     
