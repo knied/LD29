@@ -16,6 +16,7 @@ typedef Vector<uint8_t, 4> Color4;
 
 typedef Vector<float, 2> Vector2;
 typedef Vector<float, 3> Vector3;
+typedef Vector<float, 4> Vector4;
 
 typedef Matrix<float, 3, 3> Matrix3;
 typedef Matrix<float, 4, 4> Matrix4;

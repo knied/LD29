@@ -28,6 +28,7 @@
 		6D9B83C8190028520003162D /* Vector3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83B9190028520003162D /* Vector3.cpp */; };
 		6D9B83C9190028520003162D /* Vector4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83BB190028520003162D /* Vector4.cpp */; };
 		6D9B83CF190028E70003162D /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B83CC190028E70003162D /* SDL2.framework */; };
+		6D9DE8B3190BB55100D245CE /* GameCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9DE8B1190BB55100D245CE /* GameCore.cpp */; };
 		6DDECEB01903BE5600F3B6B0 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DDECEAE1903BE5600F3B6B0 /* Camera.cpp */; };
 		6DDECEB31903DD0D00F3B6B0 /* DelaunayTriangulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DDECEB11903DD0D00F3B6B0 /* DelaunayTriangulation.cpp */; };
 		6DDECEB6190435FC00F3B6B0 /* Geometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6DDECEB4190435FC00F3B6B0 /* Geometry.cpp */; };
@@ -88,6 +89,8 @@
 		6D9B83BC190028520003162D /* Vector4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector4.h; sourceTree = "<group>"; };
 		6D9B83CC190028E70003162D /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		6D9B83D019002E990003162D /* Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
+		6D9DE8B1190BB55100D245CE /* GameCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameCore.cpp; sourceTree = "<group>"; };
+		6D9DE8B2190BB55100D245CE /* GameCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCore.h; sourceTree = "<group>"; };
 		6DDECEAE1903BE5600F3B6B0 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		6DDECEAF1903BE5600F3B6B0 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
 		6DDECEB11903DD0D00F3B6B0 /* DelaunayTriangulation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DelaunayTriangulation.cpp; sourceTree = "<group>"; };
@@ -164,6 +167,8 @@
 				6D9B83A2190028400003162D /* Math */,
 				6D9B8398190028050003162D /* Helper */,
 				6D9B836B190026E50003162D /* Supporting Files */,
+				6D9DE8B1190BB55100D245CE /* GameCore.cpp */,
+				6D9DE8B2190BB55100D245CE /* GameCore.h */,
 			);
 			path = LD29;
 			sourceTree = "<group>";
@@ -332,6 +337,7 @@
 				6D9B83C3190028520003162D /* Plane3.cpp in Sources */,
 				6D9B83C8190028520003162D /* Vector3.cpp in Sources */,
 				6D9B83A11900283B0003162D /* SDLClasses.cpp in Sources */,
+				6D9DE8B3190BB55100D245CE /* GameCore.cpp in Sources */,
 				6DDECEB31903DD0D00F3B6B0 /* DelaunayTriangulation.cpp in Sources */,
 				6DDECEB01903BE5600F3B6B0 /* Camera.cpp in Sources */,
 				6D9B8371190026E50003162D /* main.cpp in Sources */,

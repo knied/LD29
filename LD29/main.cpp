@@ -11,8 +11,9 @@
 #include "Camera.h"
 #include "DelaunayTriangulation.h"
 #include <random>
+#include "GameCore.h"
 
-void plot(std::vector<Vector2> const& points) {
+/*void plot(std::vector<Vector2> const& points) {
     for (Vector2 const& p : points) {
         std::cout << p[0] << "\t" << p[1] << std::endl;
     }
@@ -59,26 +60,6 @@ std::vector<Vector2> circle(Vector2 center, float r, int d) {
         points.push_back(center + Vector2(r * cosf(i * dt), r * sinf(i * dt)));
     }
     return points;
-}
-
-void init_world_mesh(std::vector<Vector3>& mesh) {
-    float const size = 10.0f;
-    
-    std::vector<Vector2> points;
-    std::mt19937 eng;
-    std::uniform_real_distribution<float> dist(-size*0.5f,size*0.5f);
-    for (int i = 0; i < 500; ++i) {
-        points.push_back(Vector2(dist(eng), dist(eng)));
-    }
-    for (int i = 0; i < 10; ++i) {
-        points = smooth(size, size, points);
-    }
-    std::vector<Point2*> ppoints;
-    for (Vector2 const& p : points) {
-        ppoints.push_back(new Point2{p});
-    }
-    VoronoiDiagram dt(ppoints);
-    dt.vertex_data(2.0f * size, 2.0f * size, mesh);
 }
 
 void init_flag_mesh(std::vector<Vector3>& mesh) {
@@ -131,11 +112,10 @@ void init_gl(Camera const& camera, Color4 const& clear_color) {
     glLoadMatrixf(&camera.projection()(0,0));
 }
 
-void draw(Camera& camera, Vector3 const& position, std::vector<Vector3> const& shape, Color4 const& color) {
+void draw(Matrix4 const& model_view, std::vector<Vector3> const& shape, Color4 const& color) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glLoadMatrixf(&camera.transformation().world_to_local()(0,0));
-    glTranslatef(position[0], position[1], position[2]);
+    glLoadMatrixf(&model_view(0,0));
     
     glBegin(GL_TRIANGLES);
     
@@ -148,43 +128,139 @@ void draw(Camera& camera, Vector3 const& position, std::vector<Vector3> const& s
     glEnd();
 }
 
-void draw_sprite(Camera& camera, Vector3 const& position, Vector3 const& offset, std::vector<Vector3> const& shape, Color4 const& color) {
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glLoadMatrixf(&camera.transformation().world_to_local()(0,0));
-    glTranslatef(position[0], position[1], position[2]);
-    
-    Vector3 xz = vector_normal(camera.transformation().world_z() - Vector3(0.0f, 1.0f, 0.0f) * dot(Vector3(0.0f, 1.0f, 0.0f), camera.transformation().world_z()));
-    float angle = atan2f(xz[0], xz[2]);
-    glRotatef(angle * 180.0f / PI, 0.0f, 1.0f, 0.0f);
-    glTranslatef(offset[0], offset[1], offset[2]);
-    
-    glBegin(GL_TRIANGLES);
-    
-    glColor3ub(color[0], color[1], color[2]);
-    
-    for (Vector3 const& v : shape) {
-        glVertex3fv(&v[0]);
-    }
-    
-    glEnd();
+Vector2 point_on_screen(Matrix4 const& view_projection, Vector3 const& p) {
+    Vector4 proj = view_projection * Vector4(p[0], p[1], p[2], 1.0f);
+    return Vector2(proj[0]/fabs(proj[3]), proj[1]/fabs(proj[3]));
 }
+
+struct Rect2 {
+    Vector2 origin;
+    Vector2 size;
+};
+
+Rect2 rect_on_screen(Matrix4 const& view_projection, std::vector<Vector3> const& vertices) {
+    Vector2 p = point_on_screen(view_projection, vertices[0]);
+    Vector2 min = p;
+    Vector2 max = p;
+    for (Vector3 const& v : vertices) {
+        p = point_on_screen(view_projection, v);
+        min = minimum(min, p);
+        max = maximum(max, p);
+    }
+    return Rect2{min, max - min};
+}
+
+bool point_in_rect(Rect2 const& r, Vector2 const& p) {
+    return (p[0] > r.origin[0]) && (p[0] < r.origin[0] + r.size[0]) && (p[1] > r.origin[1]) && (p[1] < r.origin[1] + r.size[1]);
+}
+
+bool cursor_on_shape(Matrix4 const& model_view_projection, std::vector<Vector3> const& vertices, Vector2 const& cursor) {
+    for (int i = 0; i < vertices.size(); i+=3) {
+        Vector2 p0 = point_on_screen(model_view_projection, vertices[i+0]);
+        Vector2 p1 = point_on_screen(model_view_projection, vertices[i+1]);
+        Vector2 p2 = point_on_screen(model_view_projection, vertices[i+2]);
+        if (area(p0, p1, cursor) <= 0.0f && area(p1, p2, cursor) <= 0.0f && area(p2, p0, cursor) <= 0.0f) {
+            return true;
+        }
+    }
+    return false;
+}*/
 
 int main(int argc, const char * argv[])
 {
+    typedef std::chrono::system_clock Clock;
+    typedef std::chrono::time_point<Clock> TimeStamp;
+    typedef std::chrono::duration<double> Seconds;
+    
+    int const view_width = 1024;
+    int const view_height = 768;
+    
     // [[[NSBundle mainBundle] resourcePath] UTF8String]
     SDLSystem system("");
-    SDLGLWindow window(system, {1024, 768}, "LD29");
+    SDLGLWindow window(system, {view_width, view_height}, "LD29");
     window.set_vsync(true);
     //window.set_fullscreen(true);
     //system.set_show_cursor(false);
     
+    GameCore game(view_width, view_height);
+    
+    TimeStamp old_time(Clock::now());
+    
+    bool done = false;
+    SDL_Event event;
+    while (!done) {
+        while (system.poll_event(event)) {
+            if (event.type == SDL_QUIT) {
+                done = true;
+            } else if (event.type == SDL_MOUSEMOTION) {
+                Vector2 cursor(event.motion.x, event.motion.y);
+                cursor /= Vector2(view_width, view_height);
+                cursor *= 2.0f;
+                cursor -= 1.0f;
+                cursor[1] *= -1.0f;
+                game.mouse_moved(cursor[0], cursor[1]);
+                if (event.motion.state) {
+                    MouseButton mb = MBLeft;
+                    if (event.button.button != SDL_BUTTON_LEFT) {
+                        mb = MBRight;
+                    }
+                    game.mouse_dragged(mb, event.motion.xrel, event.motion.yrel);
+                }
+            } else if (event.type == SDL_MOUSEWHEEL) {
+                game.mouse_wheel(event.wheel.y);
+            } else if (event.type == SDL_MOUSEBUTTONDOWN) {
+                MouseButton mb = MBLeft;
+                if (event.button.button != SDL_BUTTON_LEFT) {
+                    mb = MBRight;
+                }
+                game.mouse_down(mb, event.button.x, event.button.y);
+            } else if (event.type == SDL_MOUSEBUTTONUP) {
+                MouseButton mb = MBLeft;
+                if (event.button.button != SDL_BUTTON_LEFT) {
+                    mb = MBRight;
+                }
+                game.mouse_up(mb, event.button.x, event.button.y);
+            }
+        }
+        
+        TimeStamp new_time(Clock::now());
+        Seconds elapsed = new_time - old_time;
+        game.update(elapsed.count());
+        old_time = new_time;
+        
+        window.swap();
+    }
+    
     // setup a camera
-    Camera camera;
+    /*Camera camera;
     
     // setup world map
-    std::vector<Vector3> world_mesh;
-    init_world_mesh(world_mesh);
+    //std::vector<Vector3> world_mesh;
+    //init_world_mesh(world_mesh);
+    
+    float const size = 10.0f;
+    
+    std::vector<Vector2> points;
+    std::mt19937 eng;
+    std::uniform_real_distribution<float> dist(-size*0.5f,size*0.5f);
+    for (int i = 0; i < 500; ++i) {
+        points.push_back(Vector2(dist(eng), dist(eng)));
+    }
+    for (int i = 0; i < 10; ++i) {
+        points = smooth(size, size, points);
+    }
+    std::vector<Point2*> ppoints;
+    for (Vector2 const& p : points) {
+        ppoints.push_back(new Point2{p});
+    }
+    
+    VoronoiDiagram dt(2.0f * size, 2.0f * size, ppoints);
+    float cutoff = 0.5f * size - 0.5f;
+    for (VoronoiCell2* c : dt.cells()) {
+        if (c->p->l[0] < -cutoff || c->p->l[0] > cutoff || c->p->l[1] < -cutoff || c->p->l[1] > cutoff) {
+            c->draw = false;
+        }
+    }
     
     // setup flag
     std::vector<Vector3> flag_mesh;
@@ -202,6 +278,8 @@ int main(int argc, const char * argv[])
     float y = 0.0f;
     float d = 2.0f;
     
+    Vector2 cursor;
+    
     init_gl(camera, Color4(100, 150, 100, 255));
     
     bool done = false;
@@ -211,16 +289,23 @@ int main(int argc, const char * argv[])
         while (system.poll_event(event)) {
             if (event.type == SDL_QUIT) {
                 done = true;
-            } else if (event.type == SDL_MOUSEMOTION && event.motion.state) {
-                y -= event.motion.xrel * 0.01f;
-                x -= event.motion.yrel * 0.01f;
+            } else if (event.type == SDL_MOUSEMOTION) {
+                cursor = Vector2(event.motion.x, event.motion.y);
+                cursor /= Vector2(1024, 768);
+                cursor *= 2.0f;
+                cursor -= 1.0f;
+                cursor[1] *= -1.0f;
+                if (event.motion.state) {
+                    y -= event.motion.xrel * 0.01f;
+                    x -= event.motion.yrel * 0.01f;
+                }
             } else if (event.type == SDL_MOUSEWHEEL) {
                 d += event.wheel.y * 0.5f;
             }
         }
         
-        if (x > -PI * 0.02f) {
-            x = -PI * 0.02f;
+        if (x > -PI * 0.1f) {
+            x = -PI * 0.1f;
         }
         if (x < -PI * 0.4f) {
             x = -PI * 0.4f;
@@ -243,37 +328,43 @@ int main(int argc, const char * argv[])
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        draw(camera, Vector3(), world_mesh, Color4(80, 127, 80, 255));
-        draw_sprite(camera, Vector3(0.5f, 0.0f, 0.0f), Vector3(), flag_mesh, Color4(200, 200, 200, 255));
-        draw_sprite(camera, Vector3(0.5f, 0.31f, 0.0f), Vector3(), crown_mesh, Color4(200, 200, 64, 255));
-        draw_sprite(camera, Vector3(0.5f, 0.0f, 0.0f), Vector3(-0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
-        draw_sprite(camera, Vector3(0.5f, 0.0f, 0.0f), Vector3(0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
-        draw_sprite(camera, Vector3(0.5f, 0.0f, 0.0f), Vector3(-0.05f, 0.15f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        Matrix4 view = camera.transformation().world_to_local();
+        Matrix4 projection = camera.projection();
+        Matrix4 view_projection = projection * view;
         
-        draw_sprite(camera, Vector3(-0.5f, 0.0f, 0.0f), Vector3(), flag_mesh, Color4(32, 32, 32, 255));
-        draw_sprite(camera, Vector3(-0.5f, 0.31f, 0.0f), Vector3(), crown_mesh, Color4(200, 200, 64, 255));
-        draw_sprite(camera, Vector3(-0.5f, 0.0f, 0.0f), Vector3(-0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
-        draw_sprite(camera, Vector3(-0.5f, 0.0f, 0.0f), Vector3(0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
-        draw_sprite(camera, Vector3(-0.5f, 0.0f, 0.0f), Vector3(-0.05f, 0.15f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        Vector3 camera_normal = transformed_vector(camera.transformation().local_to_world(), Vector3(0.0f, 0.0f, 1.0f));
+        Vector3 xz = vector_normal(camera_normal - Vector3(0.0f, 1.0f, 0.0f) * dot(Vector3(0.0f, 1.0f, 0.0f), camera_normal));
+        float angle = atan2f(xz[0], xz[2]);
+        Matrix4 sprite_rotation = homogeneous_rotation(Quaternion<float>(Vector3(0.0f, 1.0f, 0.0f), angle));
         
-        draw_sprite(camera, Vector3(0.0f, 0.0f, 0.5f), Vector3(), flag_mesh, Color4(255, 180, 180, 255));
-        draw_sprite(camera, Vector3(0.0f, 0.31f, 0.5f), Vector3(), crown_mesh, Color4(200, 200, 64, 255));
-        draw_sprite(camera, Vector3(0.0f, 0.0f, 0.5f), Vector3(-0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
-        draw_sprite(camera, Vector3(0.0f, 0.0f, 0.5f), Vector3(0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
-        draw_sprite(camera, Vector3(0.0f, 0.0f, 0.5f), Vector3(-0.05f, 0.15f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        Vector2 character;
+        for (VoronoiCell2* c : dt.cells()) {
+            if (c->draw) {
+                Color4 color(80, 127, 80, 255);
+                if (cursor_on_shape(view_projection, c->vertices, cursor)) {
+                    //std::cout << "on" << std::endl;
+                    color = Color4(120, 167, 120, 255);
+                    character = c->p->l;
+                }
+                draw(view, c->vertices, color);
+            }
+        }
         
-        draw_sprite(camera, Vector3(0.0f, 0.0f, -0.5f), Vector3(), flag_mesh, Color4(180, 180, 255, 255));
-        draw_sprite(camera, Vector3(0.0f, 0.31f, -0.5f), Vector3(), crown_mesh, Color4(200, 200, 64, 255));
-        draw_sprite(camera, Vector3(0.0f, 0.0f, -0.5f), Vector3(-0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
-        draw_sprite(camera, Vector3(0.0f, 0.0f, -0.5f), Vector3(0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
-        draw_sprite(camera, Vector3(0.0f, 0.0f, -0.5f), Vector3(-0.05f, 0.15f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        //std::cout << character << std::endl;
+        
+        Matrix4 model = homogeneous_translation(Vector3(character[0], 0.0f, character[1]));
+        draw(view * model * sprite_rotation, flag_mesh, Color4(200, 200, 200, 255));
+        //draw_sprite(camera, Vector3(0.5f, 0.31f, 0.0f), Vector3(), crown_mesh, Color4(200, 200, 64, 255));
+        //draw_sprite(camera, Vector3(0.5f, 0.0f, 0.0f), Vector3(-0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        //draw_sprite(camera, Vector3(0.5f, 0.0f, 0.0f), Vector3(0.05f, 0.25f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
+        //draw_sprite(camera, Vector3(0.5f, 0.0f, 0.0f), Vector3(-0.05f, 0.15f, 0.0f), dot_mesh, Color4(200, 200, 64, 255));
         
         //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         
         window.swap();
         
         first = false;
-    }
+    }*/
     
     return 0;
 }

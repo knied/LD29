@@ -38,7 +38,7 @@ public:
         _height = 600;
         _near = 0.1f;
         _far = 100.0f;
-        _fov = 90.0f;
+        _fov = 80.0f;
     }
     
     void rotate(float const x, float const y) {
@@ -52,6 +52,12 @@ public:
     void set_rotaton(float const x, float const y) {
         _transformation.set_translation(Vector3());
         _transformation.set_rotation(Quaternion<float>(Vector3(0.0f, 1.0f, 0.0f), y) * Quaternion<float>(Vector3(1.0f, 0.0f, 0.0f), x));
+        _transformation.set_translation(_position);
+        _transformation.translate_local(Vector3(0.0f, 0.0f, _distance));
+    }
+    
+    void set_position(Vector3 const& position) {
+        _position = position;
         _transformation.set_translation(_position);
         _transformation.translate_local(Vector3(0.0f, 0.0f, _distance));
     }
@@ -124,6 +130,8 @@ public:
         _far = far;
         _fov = fov;
     }
+    
+    Vector3 const& position() const { return _position; }
     
 };
 

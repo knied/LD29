@@ -39,7 +39,7 @@ bool vector_nearly_zero(const Vector<Type,3>& v, Type eps) {
 // component wise
 template <typename Type, int N>
 Vector<Type, N> minimum(const Vector<Type, N>& a, const Vector<Type, N>& b) {
-    Vector<float, 3> result;
+    Vector<float, N> result;
     for (int i = 0; i < N; ++i) {
         result[i] = a[i] < b[i] ? a[i] : b[i];
     }
@@ -53,7 +53,7 @@ Type maximum(const Type& a, const Type& b) {
 // component wise
 template <typename Type, int N>
 Vector<Type, N> maximum(const Vector<Type, N>& a, const Vector<Type, N>& b) {
-    Vector<float, 3> result;
+    Vector<float, N> result;
     for (int i = 0; i < N; ++i) {
         result[i] = a[i] > b[i] ? a[i] : b[i];
     }

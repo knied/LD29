@@ -36,6 +36,9 @@ public:
     DelaunayTriangulation(std::vector<Point2*> const& points) {
         // create initial convex shape surrounding all points
         std::vector<Point2*> hull = convex_hull(points);
+        for (Point2* p : hull) {
+            p->on_hull = true;
+        }
         _faces = triangulate_convex(hull);
         
         // handle remaining points
@@ -69,6 +72,7 @@ public:
                 stack.insert(new1);
                 stack.insert(new2);
             } else {
+                p->on_hull = true;
                 Face2* new0, *new1;
                 split_edge(*it, edge, p, &new0, &new1);
                 delete *it;
@@ -131,7 +135,7 @@ class VoronoiDiagram {
     std::vector<VoronoiCell2*> _cells;
     
 public:
-    VoronoiDiagram(std::vector<Point2*> const& points) {
+    VoronoiDiagram(float width, float height, std::vector<Point2*> const& points) {
         DelaunayTriangulation dt(points);
         std::map<Point2*, std::set<Point2*>> cells;
         for (Face2* f : dt.faces()) {
@@ -147,14 +151,7 @@ public:
         for (auto it : cells) {
             _cells.push_back(new VoronoiCell2{it.first, std::vector<Point2*>(it.second.begin(), it.second.end())});
         }
-    }
-    ~VoronoiDiagram() {
-        for (VoronoiCell2* c : _cells) {
-            delete c;
-        }
-    }
-    
-    void vertex_data(float width, float height, std::vector<Vector3>& vertices) const {
+        
         for (VoronoiCell2* c : _cells) {
             std::vector<Vector2> convex;
             convex.resize(4);
@@ -184,12 +181,19 @@ public:
             }
             
             for (int i = 1; i < (int)convex.size()-1; ++i) {
-                vertices.push_back(Vector3(convex[0][0], 0.0f, convex[0][1]));
-                vertices.push_back(Vector3(convex[i][0], 0.0f, convex[i][1]));
-                vertices.push_back(Vector3(convex[i+1][0], 0.0f, convex[i+1][1]));
+                c->vertices.push_back(Vector3(convex[0][0], 0.0f, convex[0][1]));
+                c->vertices.push_back(Vector3(convex[i][0], 0.0f, convex[i][1]));
+                c->vertices.push_back(Vector3(convex[i+1][0], 0.0f, convex[i+1][1]));
             }
         }
     }
+    ~VoronoiDiagram() {
+        for (VoronoiCell2* c : _cells) {
+            delete c;
+        }
+    }
+    
+    std::vector<VoronoiCell2*> const& cells() const { return _cells; }
 };
 
 #endif /* defined(__LD29__DelaunayTriangulation__) */
