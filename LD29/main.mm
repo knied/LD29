@@ -23,7 +23,7 @@ int main(int argc, const char * argv[])
     int const view_height = 768;
     
     SDLSystem system([[[NSBundle mainBundle] resourcePath] UTF8String]);
-    SDLGLWindow window(system, {view_width, view_height}, "LD29");
+    SDLGLWindow window(system, {view_width, view_height}, "Dwarven Kingdoms");
     window.set_vsync(true);
     //window.set_fullscreen(true);
     //system.set_show_cursor(false);
