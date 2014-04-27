@@ -46,7 +46,6 @@ struct VoronoiCell2 {
     Point2* p;
     std::vector<Point2*> n;
     std::vector<Vector3> vertices;
-    bool draw = true;
     int building = 0;
     int type = 0;
     int coins = 0;

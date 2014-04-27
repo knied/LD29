@@ -25,6 +25,7 @@ struct Unit {
     int coins;
     int kingdom;
     int type; // 0: king; 1: troops
+    bool dead = false;
 };
 
 class GameCore {
@@ -43,6 +44,7 @@ class GameCore {
     std::vector<Vector3> _small_flag_mesh;
     std::vector<Vector3> _coin_mesh;
     std::vector<Vector3> _crown_mesh;
+    std::vector<Vector3> _decal_mesh;
     std::vector<Vector3> _indicator_mesh;
     std::vector<Vector3> _mine_base_mesh;
     std::vector<Vector3> _mine_wheel_mesh;
@@ -66,9 +68,13 @@ class GameCore {
     void update_camera(float dt);
     
     Unit& current_unit();
+    std::vector<VoronoiCell2*> valid_placements(Unit const& u);
     std::vector<VoronoiCell2*> valid_moves(Unit const& u);
-    void draw_king(Unit const& king);
-    void king_ai(Unit& king);
+    void draw_unit(Unit const& unit);
+    void king_ai(std::vector<VoronoiCell2*> const& valid);
+    void spawn_unit(VoronoiCell2* location, int kingdom);
+    void kill_unit_at(VoronoiCell2* location);
+    void remove_kingdom(int kingdom);
     
     std::vector<Unit> _units;
     int _current_unit;
