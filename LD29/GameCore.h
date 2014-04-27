@@ -19,11 +19,12 @@ typedef enum {
     MBRight
 } MouseButton;
 
-struct King {
+struct Unit {
     VoronoiCell2* location;
     VoronoiCell2* destination;
     int coins;
-    Color4 color;
+    int kingdom;
+    int type; // 0: king; 1: troops
 };
 
 class GameCore {
@@ -48,6 +49,7 @@ class GameCore {
 
     Color4 _kingdom_colors[4];
     Color4 _kingdom_map_colors[4];
+    Color4 _kingdom_map_highlight_colors[4];
     Color4 _background_color;
     Color4 _cell_color;
     Color4 _indicator_color;
@@ -62,12 +64,15 @@ class GameCore {
     Matrix4 _camera_model;
     
     void update_camera(float dt);
-    void draw_king(King const& king);
-    void update_king(float dt, King& king);
-    void king_ai(King& king);
     
-    std::vector<King> _kings;
-    int _current_king;
+    Unit& current_unit();
+    std::vector<VoronoiCell2*> valid_moves(Unit const& u);
+    void draw_king(Unit const& king);
+    void king_ai(Unit& king);
+    
+    std::vector<Unit> _units;
+    int _current_unit;
+    
     int _turn_state;
     float _turn_timer;
     void next_turn_state();

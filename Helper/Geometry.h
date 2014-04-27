@@ -51,6 +51,7 @@ struct VoronoiCell2 {
     int type = 0;
     int coins = 0;
     int spawn = 0;
+    int kingdom = -1;
 }; // VoronoiCell2
 
 // next index in counter clockwise direction
