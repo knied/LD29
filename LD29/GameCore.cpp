@@ -202,6 +202,15 @@ void init_mine_mesh(std::vector<Vector3>& base_mesh, std::vector<Vector3>& wheel
     wheel_mesh.push_back(w7);
 }
 
+void init_star_mesh(std::vector<Vector3>& mesh) {
+    Vector2 center(0.0f, 0.2f);
+    std::vector<Vector2> shape = circle(center, 0.2f, 16);
+    for (int i = 1; i < 16; i+=2) {
+        shape[i] += 0.5f * (center - shape[i]);
+    }
+    mesh = to_xy(triangulate(shape));
+}
+
 void init_gl(Camera const& camera, Color4 const& clear_color) {
     glClearColor(clear_color[0]/255.0f, clear_color[1]/255.0f, clear_color[2]/255.0f, 1.0f);
     
@@ -267,7 +276,9 @@ bool cursor_on_shape(Matrix4 const& model_view_projection, std::vector<Vector3> 
 }
 
 GameCore::GameCore(int view_width, int view_height)
-: _view_width(view_width), _view_height(view_height), _camera_zoom(0.0f), _second_timer(0.0f), _rand_engine((unsigned int)time(0)) {
+: _view_width(view_width), _view_height(view_height),
+_camera_zoom(0.0f), _second_timer(0.0f), _rand_engine((unsigned int)time(0)),
+_game_over(false) {
     _kingdom_colors[0] = Color4(100, 30, 30, 255);
     _kingdom_colors[1] = Color4(30, 100, 100, 255);
     _kingdom_colors[2] = Color4(30, 100, 30, 255);
@@ -342,6 +353,7 @@ GameCore::GameCore(int view_width, int view_height)
             _units[i].destination = c;
             _units[i].coins = 4;
             _units[i].kingdom = i;
+            //_units[i].dead = i != 0;
             i++;
             if (i >= 4) {
                 break;
@@ -356,6 +368,7 @@ GameCore::GameCore(int view_width, int view_height)
     init_indicator_mesh(_indicator_mesh);
     init_mine_mesh(_mine_base_mesh, _mine_wheel_mesh);
     init_decal_mesh(_decal_mesh);
+    init_star_mesh(_star_mesh);
     
     init_gl(_camera, _background_color);
     
@@ -422,7 +435,11 @@ void GameCore::update_camera(float dt) {
         _camera_zoom = 5.0f;
     }
     
-    _target_camera_position = Vector3(current_unit().location->p->l[0], 0.0f, current_unit().location->p->l[1]);
+    if (_game_over) {
+        _target_camera_position = Vector3(_winner_location->p->l[0], 0.0f, _winner_location->p->l[1]);
+    } else {
+        _target_camera_position = Vector3(current_unit().location->p->l[0], 0.0f, current_unit().location->p->l[1]);
+    }
     
     _camera.set_rotaton(_camera_rotation[0], _camera_rotation[1]);
     _camera.set_zoom(_camera_zoom);
@@ -493,12 +510,42 @@ std::vector<VoronoiCell2*> GameCore::valid_moves(Unit const& u) {
 }
 
 void GameCore::next_turn_state() {
+    if (_game_over) {
+        return;
+    }
+    
     if (_turn_state == 2) {
         current_unit().location = current_unit().destination;
     }
     
+    std::set<int> remaining_kingdoms;
+    for (Unit& u : _units) {
+        if (!u.dead) {
+            remaining_kingdoms.insert(u.kingdom);
+        }
+    }
+    if (remaining_kingdoms.size() <= 1) {
+        _game_over = true;
+        for (Unit& u : _units) {
+            if (u.kingdom == current_unit().kingdom && u.type == 0) {
+                _winner_location = u.location;
+            }
+        }
+    } else {
+        if (remaining_kingdoms.find(0) == remaining_kingdoms.end()) {
+            _game_over = true;
+            for (Unit& u : _units) {
+                if (u.kingdom == current_unit().kingdom && u.type == 0) {
+                    _winner_location = u.location;
+                }
+            }
+        }
+    }
+    
     _turn_timer = 0.0f;
-    _turn_state++;
+    if (!(_game_over && _turn_state == 1)) {
+        _turn_state++;
+    }
     if (_turn_state > 3) {
         _turn_state = 0;
         int _previous_unit = _current_unit;
@@ -509,7 +556,7 @@ void GameCore::next_turn_state() {
         
         // update mines
         if (_previous_unit >= _current_unit) {
-            std::cout << "==== NEXT ====" << std::endl;
+            //std::cout << "==== NEXT ====" << std::endl;
             for (VoronoiCell2* c : _world->cells()) {
                 if (c->building == 1 && c->coins == 0) {
                     c->spawn++;
@@ -522,9 +569,9 @@ void GameCore::next_turn_state() {
         }
     }
     
-    std::cout << "state: " << _turn_state << std::endl;
-    std::cout << "unit: " << _current_unit << std::endl;
-    std::cout << "kingdom: " << current_unit().kingdom << std::endl;
+    //std::cout << "state: " << _turn_state << std::endl;
+    //std::cout << "unit: " << _current_unit << std::endl;
+    //std::cout << "kingdom: " << current_unit().kingdom << std::endl;
 }
 
 void GameCore::draw_unit(Unit const& unit) {
@@ -535,7 +582,7 @@ void GameCore::draw_unit(Unit const& unit) {
     Matrix4 model = homogeneous_translation(position);
     
     float t = 0.0f;
-    if (current_unit().location == unit.location) {
+    if (current_unit().location == unit.location || _game_over) {
         t = 0.01f * (1.0f + cosf(4.0f * PI * _second_timer));
     }
     if (unit.type == 0) {
@@ -558,6 +605,11 @@ void GameCore::draw_unit(Unit const& unit) {
         if (unit.coins > 3) {
             offset = homogeneous_translation(Vector3(0.05f, t + 0.15f, 0.0f));
             draw(_view * model * _sprite_rotation * offset, _coin_mesh, _gold_color);
+        }
+        
+        if (_game_over) {
+            offset = homogeneous_translation(Vector3(0.0f, 4.0f * t + 0.45f, 0.0f));
+            draw(_view * model * _sprite_rotation * offset, _star_mesh, _gold_color);
         }
     } else {
         Matrix4 offset = homogeneous_translation(Vector3(0.0f, t, 0.0f));
@@ -692,7 +744,9 @@ void GameCore::update(float dt) {
     }
     
     if (_turn_state == 1) {
-        if (current_unit().kingdom != 0) {
+        if (valid.size() == 0) {
+            next_turn_state();
+        } else if (current_unit().kingdom != 0) {
             king_ai(valid);
             next_turn_state();
         }
@@ -710,7 +764,7 @@ void GameCore::update(float dt) {
     
     // draw indicator
     glDisable(GL_DEPTH_TEST);
-    if (current_unit().kingdom == 0 && _turn_state == 1 && _selected_cell) {
+    if (current_unit().kingdom == 0 && _turn_state == 1 && _selected_cell && !_game_over) {
         float t = 0.05f + 0.05f * sinf(_second_timer * 2.0f * PI);
         Matrix4 model = homogeneous_translation(Vector3(_selected_cell->p->l[0], 0.0f, _selected_cell->p->l[1]));
         if (current_unit().coins >= 4) {
@@ -723,4 +777,8 @@ void GameCore::update(float dt) {
         }
     }
     glEnable(GL_DEPTH_TEST);
+}
+
+bool GameCore::game_over() const {
+    return _game_over;
 }

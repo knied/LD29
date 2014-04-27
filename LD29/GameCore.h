@@ -48,6 +48,7 @@ class GameCore {
     std::vector<Vector3> _indicator_mesh;
     std::vector<Vector3> _mine_base_mesh;
     std::vector<Vector3> _mine_wheel_mesh;
+    std::vector<Vector3> _star_mesh;
 
     Color4 _kingdom_colors[4];
     Color4 _kingdom_map_colors[4];
@@ -87,6 +88,9 @@ class GameCore {
     
     float _second_timer;
     
+    bool _game_over;
+    VoronoiCell2* _winner_location;
+    
 public:
     GameCore(int view_width, int view_height);
     ~GameCore();
@@ -98,6 +102,8 @@ public:
     void mouse_wheel(float w);
     
     void update(float dt);
+    
+    bool game_over() const;
 };
 
 #endif /* defined(__LD29__GameCore__) */
