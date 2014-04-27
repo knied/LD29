@@ -275,6 +275,13 @@ bool cursor_on_shape(Matrix4 const& model_view_projection, std::vector<Vector3> 
     return false;
 }
 
+bool valid_cell(VoronoiCell2* c, float cutoff) {
+    if (c->p->l[0] < -cutoff || c->p->l[0] > cutoff || c->p->l[1] < -cutoff || c->p->l[1] > cutoff) {
+        return false;
+    }
+    return true;
+}
+
 GameCore::GameCore(int view_width, int view_height)
 : _view_width(view_width), _view_height(view_height),
 _camera_zoom(0.0f), _second_timer(0.0f), _rand_engine((unsigned int)time(0)),
@@ -290,11 +297,14 @@ _game_over(false) {
     _kingdom_map_colors[2] = _kingdom_colors[2] + diff;
     _kingdom_map_colors[3] = _kingdom_colors[3] + diff;
     
-    Color4 diff2(40, 40, 40, 0);
+    Color4 diff2(45, 45, 45, 0);
     _kingdom_map_highlight_colors[0] = _kingdom_map_colors[0] + diff2;
     _kingdom_map_highlight_colors[1] = _kingdom_map_colors[1] + diff2;
     _kingdom_map_highlight_colors[2] = _kingdom_map_colors[2] + diff2;
     _kingdom_map_highlight_colors[3] = _kingdom_map_colors[3] + diff2;
+    
+    Color4 diff3(30, 30, 30, 0);
+    _select_color = color_interpolation(_kingdom_colors[0], Color4(255, 255, 255, 255), 0.9f);
     
     _background_color = Color4(200, 220, 255, 255);
     
@@ -323,23 +333,56 @@ _game_over(false) {
     
     _world = new VoronoiDiagram(size, size, ppoints);
     
-    _selected_cell = 0;
-    std::uniform_int_distribution<int> dist3(0, 8);
+    // Generate a map:
     float cutoff = 0.5f * size - 0.5f;
+    
+    // 1.) find a valid seed cell
+    std::vector<VoronoiCell2*> map;
     for (VoronoiCell2* c : _world->cells()) {
-        if (c->p->l[0] < -cutoff || c->p->l[0] > cutoff || c->p->l[1] < -cutoff || c->p->l[1] > cutoff) {
-            c->type = 1;
-        } else {
-            if (dist3(_rand_engine) == 0) {
-                c->building = 1;
-            } else if (dist3(_rand_engine) < 2) {
-                c->type = 1;
+        if (valid_cell(c, cutoff)) {
+            c->type = 0;
+            map.push_back(c);
+            break;
+        }
+    }
+    
+    // 2.) expand the map starting from the seed. All cells have to be connected.
+    for (int i = 0; i < 100; ++i) {
+        bool found = false;
+        for (VoronoiCell2* c : _world->cells()) {
+            if (c->type == 1 && valid_cell(c, cutoff)) {
+                for (VoronoiCell2* m : map) {
+                    if (std::find(m->n.begin(), m->n.end(), c->p) != m->n.end()) {
+                        found = true;
+                        map.push_back(c);
+                        c->type = 0;
+                        break;
+                    }
+                }
             }
-            if (c->building == 1) {
+            if (found) {
+                break;
+            }
+        }
+        if (!found) {
+            std::cout << i << std::endl;
+            throw std::runtime_error("malformed point set.");
+        }
+    }
+    
+    // 3.) place mines
+    std::uniform_int_distribution<int> dist3(0, 8);
+    for (int i = 0; i < 20; ++i) {
+        for (VoronoiCell2* c : _world->cells()) {
+            if (c->type == 0 && c->building != 1) {
+                c->building = 1;
                 c->spawn = dist3(_rand_engine);
+                break;
             }
         }
     }
+    
+    _selected_cell = 0;
     _turn_state = 0;
     _turn_timer = 0.0f;
     _current_unit = 0;
@@ -347,7 +390,15 @@ _game_over(false) {
     _units.resize(4);
     int i = 0;
     for (VoronoiCell2* c : _world->cells()) {
-        if (c->type == 0 && c->building == 1) {
+        bool valid = true;
+        for (int j = 0; j < i; ++j) {
+            if (std::find(_units[j].location->n.begin(),
+                          _units[j].location->n.end(),
+                          c->p) != _units[j].location->n.end()) {
+                valid = false;
+            }
+        }
+        if (valid && c->type == 0 && c->building == 1) {
             c->kingdom = i;
             _units[i].location = c;
             _units[i].destination = c;
@@ -395,19 +446,21 @@ void GameCore::mouse_down(MouseButton button, float x, float y) {
 
 void GameCore::mouse_up(MouseButton button, float x, float y) {
     if (current_unit().kingdom == 0 && button == MBLeft && _selected_cell) {
-        _selected_cell->kingdom = current_unit().kingdom;
+        perform_move(_selected_cell);
+        /*_selected_cell->kingdom = current_unit().kingdom;
         if (current_unit().coins >= 4) {
             kill_unit_at(_selected_cell);
             spawn_unit(_selected_cell, current_unit().kingdom);
             current_unit().coins = 0;
         } else {
+            _sound_queue.push_back(_move_sound);
             if (_selected_cell != current_unit().location) {
                 kill_unit_at(_selected_cell);
             }
             current_unit().destination = _selected_cell;
         }
         
-        next_turn_state();
+        next_turn_state();*/
     }
 }
 
@@ -574,6 +627,22 @@ void GameCore::next_turn_state() {
     //std::cout << "kingdom: " << current_unit().kingdom << std::endl;
 }
 
+void GameCore::perform_move(VoronoiCell2* destination) {
+    destination->kingdom = current_unit().kingdom;
+    if (current_unit().coins >= 4) {
+        kill_unit_at(destination);
+        spawn_unit(destination, current_unit().kingdom);
+        current_unit().coins = 0;
+    } else {
+        _sound_queue.push_back(_move_sound);
+        if (destination != current_unit().location) {
+            kill_unit_at(destination);
+        }
+        current_unit().destination = destination;
+    }
+    next_turn_state();
+}
+
 void GameCore::draw_unit(Unit const& unit) {
     Vector3 position = linear_interpolation(Vector3(unit.location->p->l[0], 0.0f, unit.location->p->l[1]),
                                             Vector3(unit.destination->p->l[0], 0.0f, unit.destination->p->l[1]),
@@ -619,19 +688,94 @@ void GameCore::draw_unit(Unit const& unit) {
     }
 }
 
-void GameCore::king_ai(std::vector<VoronoiCell2*> const& valid) {
-    std::uniform_int_distribution<int> dist(0, (int)valid.size()-1);
-    VoronoiCell2* destination = valid[dist(_rand_engine)];
-    destination->kingdom = current_unit().kingdom;
-    if (current_unit().coins >= 4) {
-        kill_unit_at(destination);
-        spawn_unit(destination, current_unit().kingdom);
-        current_unit().coins = 0;
-    } else {
-        if (destination != current_unit().location) {
-            kill_unit_at(destination);
+bool GameCore::win_battle_at(VoronoiCell2* c) {
+    for (Unit& u : _units) {
+        if (!u.dead && u.kingdom != current_unit().kingdom && u.location == c) {
+            return true;
         }
-        current_unit().destination = destination;
+    }
+    return false;
+}
+
+bool GameCore::danger_at(VoronoiCell2* cell) {
+    for (VoronoiCell2* c : _world->cells()) {
+        if (c->type == 0 && std::find(cell->n.begin(), cell->n.end(), c->p) != cell->n.end()) {
+            for (Unit& u : _units) {
+                if (!u.dead && u.kingdom != current_unit().kingdom && u.location == c && (u.type == 1 || (u.type == 0 && u.coins >= 4))) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+void GameCore::troops_ai(std::vector<VoronoiCell2*> const& valid) {
+    std::vector<VoronoiCell2*> destinations;
+    int max_value = -100000000;
+    for (VoronoiCell2* c : valid) {
+        int value = 0;
+        if (c != current_unit().location) {
+            value += 1;
+        }
+        if (c->kingdom != current_unit().kingdom) {
+            value += 10;
+            if (c->building != 0) {
+                value += 5;
+            }
+        }
+        if (danger_at(c)) {
+            value -= 20;
+        }
+        if (win_battle_at(c)) {
+            value += 40;
+        }
+        
+        if (value > max_value) {
+            max_value = value;
+            destinations = {c};
+        } else if (value == max_value) {
+            destinations.push_back(c);
+        }
+    }
+    
+    std::uniform_int_distribution<int> dist(0, (int)destinations.size()-1);
+    VoronoiCell2* destination = destinations[dist(_rand_engine)];
+    perform_move(destination);
+}
+
+void GameCore::king_ai(std::vector<VoronoiCell2*> const& valid) {
+    if (current_unit().coins >= 4) {
+        troops_ai(valid);
+    } else {
+        std::vector<VoronoiCell2*> destinations;
+        int max_value = -100000000;
+        for (VoronoiCell2* c : valid) {
+            int value = 0;
+            if (c != current_unit().location && danger_at(current_unit().location)) {
+                value += 20;
+            }
+            if (c != current_unit().location) {
+                value += 1;
+            }
+            if (danger_at(c)) {
+                value -= 20;
+            }
+            if (c->coins > 0) {
+                value += 10;
+            }
+            
+            if (value > max_value) {
+                max_value = value;
+                destinations = {c};
+            } else if (value == max_value) {
+                destinations.push_back(c);
+            }
+        }
+        
+        std::uniform_int_distribution<int> dist(0, (int)destinations.size()-1);
+        VoronoiCell2* destination = destinations[dist(_rand_engine)];
+        perform_move(destination);
     }
 }
 
@@ -644,11 +788,14 @@ void GameCore::spawn_unit(VoronoiCell2* location, int kingdom) {
     it->kingdom = kingdom;
     it->type = 1;
     it->coins = 0;
+    
+    _sound_queue.push_back(_spawn_sound);
 }
 
 void GameCore::kill_unit_at(VoronoiCell2* location) {
     for (Unit& u : _units) {
-        if (u.location == location) {
+        if (u.location == location && !u.dead) {
+            _sound_queue.push_back(_kill_sound);
             u.dead = true;
             if (u.type == 0) {
                 remove_kingdom(u.kingdom);
@@ -705,9 +852,13 @@ void GameCore::update(float dt) {
                 color = _kingdom_map_colors[c->kingdom];
             }
             
-            if (std::find(valid.begin(), valid.end(), c) != valid.end()) {
+            if (!_game_over && std::find(valid.begin(), valid.end(), c) != valid.end()) {
                 float t = 0.5f * (1.0f + sinf(4.0f * PI * _second_timer));
-                color = color_interpolation(_kingdom_map_highlight_colors[current_unit().kingdom], color, t);
+                Color4 fade_color = _kingdom_map_highlight_colors[current_unit().kingdom];
+                if (c == _selected_cell) {
+                    fade_color = _select_color;
+                }
+                color = color_interpolation(fade_color, color, t);
             }
             
             draw(_view, c->vertices, color);
@@ -743,18 +894,23 @@ void GameCore::update(float dt) {
         next_turn_state();
     }
     
-    if (_turn_state == 1) {
+    if (_turn_state == 1 && !_game_over) {
         if (valid.size() == 0) {
             next_turn_state();
         } else if (current_unit().kingdom != 0) {
-            king_ai(valid);
-            next_turn_state();
+            if (current_unit().type == 0) {
+                king_ai(valid);
+            } else {
+                troops_ai(valid);
+            }
+            //next_turn_state();
         }
     }
     
     for (Unit& u : _units) {
         if (!u.dead) {
             if (u.type == 0 && u.location->coins > 0) {
+                _sound_queue.push_back(_coin_sound);
                 u.location->coins = 0;
                 u.coins++;
             }
@@ -781,4 +937,20 @@ void GameCore::update(float dt) {
 
 bool GameCore::game_over() const {
     return _game_over;
+}
+
+void GameCore::set_sounds(int move_sound, int coin_sound, int kill_sound, int spawn_sound) {
+    _move_sound = move_sound;
+    _coin_sound = coin_sound;
+    _kill_sound = kill_sound;
+    _spawn_sound = spawn_sound;
+}
+
+int GameCore::next_sound() {
+    if (_sound_queue.size() <= 0) {
+        return -1;
+    }
+    int next = _sound_queue.front();
+    _sound_queue.erase(_sound_queue.begin());
+    return next;
 }

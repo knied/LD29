@@ -7,9 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6D33AF19190D5FA1003DD010 /* coin.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6D33AF15190D5FA1003DD010 /* coin.wav */; };
+		6D33AF1A190D5FA1003DD010 /* kill.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6D33AF16190D5FA1003DD010 /* kill.wav */; };
+		6D33AF1B190D5FA1003DD010 /* move.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6D33AF17190D5FA1003DD010 /* move.wav */; };
+		6D33AF1C190D5FA1003DD010 /* spawn.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6D33AF18190D5FA1003DD010 /* spawn.wav */; };
+		6D33AF20190D6C8E003DD010 /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D9B83CC190028E70003162D /* SDL2.framework */; };
 		6D9B8365190026E50003162D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B8364190026E50003162D /* Cocoa.framework */; };
 		6D9B836F190026E50003162D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B836D190026E50003162D /* InfoPlist.strings */; };
-		6D9B8371190026E50003162D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B8370190026E50003162D /* main.cpp */; };
+		6D9B8371190026E50003162D /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B8370190026E50003162D /* main.mm */; };
 		6D9B8375190026E50003162D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B8373190026E50003162D /* Credits.rtf */; };
 		6D9B8385190026E50003162D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B8364190026E50003162D /* Cocoa.framework */; };
 		6D9B839F1900283B0003162D /* Components.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B83991900283B0003162D /* Components.cpp */; };
@@ -45,7 +50,24 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		6D33AF1F190D6C7D003DD010 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6D33AF20190D6C8E003DD010 /* SDL2.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		6D33AF15190D5FA1003DD010 /* coin.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = coin.wav; sourceTree = "<group>"; };
+		6D33AF16190D5FA1003DD010 /* kill.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = kill.wav; sourceTree = "<group>"; };
+		6D33AF17190D5FA1003DD010 /* move.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = move.wav; sourceTree = "<group>"; };
+		6D33AF18190D5FA1003DD010 /* spawn.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = spawn.wav; sourceTree = "<group>"; };
 		6D9B8361190026E50003162D /* LD29.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LD29.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D9B8364190026E50003162D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		6D9B8367190026E50003162D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -53,7 +75,7 @@
 		6D9B8369190026E50003162D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6D9B836C190026E50003162D /* LD29-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LD29-Info.plist"; sourceTree = "<group>"; };
 		6D9B836E190026E50003162D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		6D9B8370190026E50003162D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		6D9B8370190026E50003162D /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		6D9B8372190026E50003162D /* LD29-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LD29-Prefix.pch"; sourceTree = "<group>"; };
 		6D9B8374190026E50003162D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		6D9B8382190026E50003162D /* LD29Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LD29Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -176,9 +198,13 @@
 		6D9B836B190026E50003162D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				6D33AF15190D5FA1003DD010 /* coin.wav */,
+				6D33AF16190D5FA1003DD010 /* kill.wav */,
+				6D33AF17190D5FA1003DD010 /* move.wav */,
+				6D33AF18190D5FA1003DD010 /* spawn.wav */,
 				6D9B836C190026E50003162D /* LD29-Info.plist */,
 				6D9B836D190026E50003162D /* InfoPlist.strings */,
-				6D9B8370190026E50003162D /* main.cpp */,
+				6D9B8370190026E50003162D /* main.mm */,
 				6D9B8372190026E50003162D /* LD29-Prefix.pch */,
 				6D9B8373190026E50003162D /* Credits.rtf */,
 			);
@@ -248,6 +274,7 @@
 				6D9B835D190026E50003162D /* Sources */,
 				6D9B835E190026E50003162D /* Frameworks */,
 				6D9B835F190026E50003162D /* Resources */,
+				6D33AF1F190D6C7D003DD010 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -314,7 +341,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D33AF1B190D5FA1003DD010 /* move.wav in Resources */,
+				6D33AF1A190D5FA1003DD010 /* kill.wav in Resources */,
+				6D33AF19190D5FA1003DD010 /* coin.wav in Resources */,
 				6D9B836F190026E50003162D /* InfoPlist.strings in Resources */,
+				6D33AF1C190D5FA1003DD010 /* spawn.wav in Resources */,
 				6D9B8375190026E50003162D /* Credits.rtf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -340,7 +371,7 @@
 				6D9DE8B3190BB55100D245CE /* GameCore.cpp in Sources */,
 				6DDECEB31903DD0D00F3B6B0 /* DelaunayTriangulation.cpp in Sources */,
 				6DDECEB01903BE5600F3B6B0 /* Camera.cpp in Sources */,
-				6D9B8371190026E50003162D /* main.cpp in Sources */,
+				6D9B8371190026E50003162D /* main.mm in Sources */,
 				6D9B83C0190028520003162D /* Matrix2.cpp in Sources */,
 				6D9B83C4190028520003162D /* Quaternion.cpp in Sources */,
 				6D9B83BE190028520003162D /* MathUtility.cpp in Sources */,
@@ -475,6 +506,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LD29/LD29-Prefix.pch";
 				INFOPLIST_FILE = "LD29/LD29-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -493,6 +525,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LD29/LD29-Prefix.pch";
 				INFOPLIST_FILE = "LD29/LD29-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

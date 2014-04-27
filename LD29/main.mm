@@ -22,20 +22,33 @@ int main(int argc, const char * argv[])
     int const view_width = 1024;
     int const view_height = 768;
     
-    // [[[NSBundle mainBundle] resourcePath] UTF8String]
-    SDLSystem system("");
+    SDLSystem system([[[NSBundle mainBundle] resourcePath] UTF8String]);
     SDLGLWindow window(system, {view_width, view_height}, "LD29");
     window.set_vsync(true);
     //window.set_fullscreen(true);
     //system.set_show_cursor(false);
     
+    int move_sound = system.load_sound("move.wav");
+    int coin_sound = system.load_sound("coin.wav");
+    int kill_sound = system.load_sound("kill.wav");
+    int spawn_sound = system.load_sound("spawn.wav");
+    
     GameCore* game = new GameCore(view_width, view_height);
+    game->set_sounds(move_sound, coin_sound, kill_sound, spawn_sound);
     
     TimeStamp old_time(Clock::now());
     
     bool done = false;
     SDL_Event event;
     while (!done) {
+        if (!system.sound_playing()) {
+            int sound = game->next_sound();
+            if (sound >= 0) {
+                system.play_sound(sound);
+            }
+        }
+        system.update_sound();
+        
         while (system.poll_event(event)) {
             if (event.type == SDL_QUIT) {
                 done = true;
@@ -65,6 +78,7 @@ int main(int argc, const char * argv[])
                 if (game->game_over() && event.button.button == SDL_BUTTON_LEFT) {
                     delete game;
                     game = new GameCore(view_width, view_height);
+                    game->set_sounds(move_sound, coin_sound, kill_sound, spawn_sound);
                 } else {
                     MouseButton mb = MBLeft;
                     if (event.button.button != SDL_BUTTON_LEFT) {

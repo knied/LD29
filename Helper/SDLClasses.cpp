@@ -13,11 +13,32 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
+static Uint8 *audio_pos; // global pointer to the audio buffer to be played
+static Uint32 audio_len; // remaining length of the sample we have to play
+
+void my_audio_callback(void *userdata, Uint8 *stream, int len) {
+	
+	if (audio_len ==0)
+		return;
+	
+	len = ( len > audio_len ? audio_len : len );
+	SDL_memcpy (stream, audio_pos, len); 					// simply copy from one buffer into the other
+	//SDL_MixAudio(stream, audio_pos, len, 32);// mix from one buffer into another
+	
+	audio_pos += len;
+	audio_len -= len;
+}
+
 SDLSystem::SDLSystem(std::string const& resource_path)
-: _resource_path(resource_path + "/") {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) throw std::runtime_error("Error: SDL_Init");
+: _resource_path(resource_path + "/"), _sound_playing(false), _next_sound(0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
+        throw std::runtime_error("Error: SDL_Init");
 }
 SDLSystem::~SDLSystem() {
+    for (auto& s : _sounds) {
+        SDL_FreeWAV(s.second.wav_buffer);
+    }
+    
     SDL_Quit();
 }
 
@@ -56,6 +77,60 @@ std::string SDLSystem::load_text_file(std::string const& filename) const {
     }
     throw std::runtime_error("Error: Unable to load file: " + _resource_path + filename);
     return "";
+}
+
+int SDLSystem::load_sound(std::string const& filename) {
+    Sound new_sound;
+    if( SDL_LoadWAV((_resource_path + filename).c_str(),
+                    &new_sound.wav_spec,
+                    &new_sound.wav_buffer,
+                    &new_sound.wav_length) == 0 ){
+        return -1;
+	}
+    
+    new_sound.wav_spec.callback = my_audio_callback;
+	new_sound.wav_spec.userdata = 0;
+    
+    int sound_index = _next_sound++;
+    _sounds.insert(std::make_pair(sound_index, new_sound));
+    return sound_index;
+}
+
+void SDLSystem::play_sound(int sound) {
+    auto it = _sounds.find(sound);
+    if (it == _sounds.end()) {
+        std::cout << "WARNING: No sound found..." << std::endl;
+        return;
+    }
+    
+    if (_sound_playing) {
+        SDL_CloseAudio();
+    }
+    
+    audio_pos = it->second.wav_buffer; // copy sound buffer
+	audio_len = it->second.wav_length; // copy file length
+    
+    if ( SDL_OpenAudio(&it->second.wav_spec, NULL) < 0 ) {
+        std::cout << "WARNING: Unable to open audio..." << std::endl;
+        return;
+	}
+    
+    SDL_PauseAudio(0);
+    
+    _sound_playing = true;
+}
+
+void SDLSystem::update_sound() {
+    if (_sound_playing) {
+        if (audio_len <= 0) {
+            SDL_CloseAudio();
+            _sound_playing = false;
+        }
+    }
+}
+
+bool SDLSystem::sound_playing() const {
+    return _sound_playing;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -57,6 +57,7 @@ class GameCore {
     Color4 _cell_color;
     Color4 _indicator_color;
     Color4 _gold_color;
+    Color4 _select_color;
     
     Vector2 _cursor;
     
@@ -71,7 +72,11 @@ class GameCore {
     Unit& current_unit();
     std::vector<VoronoiCell2*> valid_placements(Unit const& u);
     std::vector<VoronoiCell2*> valid_moves(Unit const& u);
+    void perform_move(VoronoiCell2* destination);
     void draw_unit(Unit const& unit);
+    bool win_battle_at(VoronoiCell2* c);
+    bool danger_at(VoronoiCell2* c);
+    void troops_ai(std::vector<VoronoiCell2*> const& valid);
     void king_ai(std::vector<VoronoiCell2*> const& valid);
     void spawn_unit(VoronoiCell2* location, int kingdom);
     void kill_unit_at(VoronoiCell2* location);
@@ -91,6 +96,13 @@ class GameCore {
     bool _game_over;
     VoronoiCell2* _winner_location;
     
+    std::vector<int> _sound_queue;
+    
+    int _move_sound;
+    int _coin_sound;
+    int _kill_sound;
+    int _spawn_sound;
+    
 public:
     GameCore(int view_width, int view_height);
     ~GameCore();
@@ -104,6 +116,9 @@ public:
     void update(float dt);
     
     bool game_over() const;
+    
+    void set_sounds(int move_sound, int coin_sound, int kill_sound, int spawn_sound);
+    int next_sound();
 };
 
 #endif /* defined(__LD29__GameCore__) */

@@ -47,7 +47,7 @@ struct VoronoiCell2 {
     std::vector<Point2*> n;
     std::vector<Vector3> vertices;
     int building = 0;
-    int type = 0;
+    int type = 1;
     int coins = 0;
     int spawn = 0;
     int kingdom = -1;

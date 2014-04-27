@@ -16,12 +16,23 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <map>
 #include "Types.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
+struct Sound {
+    Uint32 wav_length; // length of our sample
+	Uint8 *wav_buffer; // buffer containing our audio file
+	SDL_AudioSpec wav_spec; // the specs of our piece of music};
+};
+
 class SDLSystem {
     std::string _resource_path;
+    
+    bool _sound_playing;
+    int _next_sound;
+    std::map<int, Sound> _sounds;
     
 public:
     SDLSystem(std::string const& resource_path);
@@ -34,6 +45,11 @@ public:
     bool poll_event(SDL_Event& event);
     std::string const& resource_path() const;
     std::string load_text_file(std::string const& filename) const;
+    
+    int load_sound(std::string const& filename);
+    void play_sound(int sound);
+    void update_sound();
+    bool sound_playing() const;
 }; // SDLSystem
 
 ////////////////////////////////////////////////////////////////////////////////
