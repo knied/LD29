@@ -10,20 +10,15 @@
 #include <OpenGL/gl.h>
 #include "Camera.h"
 #include "DelaunayTriangulation.h"
-//#include <random>
 #include "GameCore.h"
 #include <time.h>
 
 int main(int argc, const char * argv[])
 {
-    //typedef std::chrono::system_clock Clock;
-    //typedef std::chrono::time_point<Clock> TimeStamp;
-    //typedef std::chrono::duration<double> Seconds;
-    
     int const view_width = 1024;
     int const view_height = 768;
     
-    SDLSystem system([[[NSBundle mainBundle] resourcePath] UTF8String]);
+    SDLSystem system("resources");
     SDLGLWindow window(system, Vector<int, 2>(view_width, view_height), "Dwarven Kingdoms");
     window.set_vsync(true);
     //window.set_fullscreen(true);
@@ -37,7 +32,6 @@ int main(int argc, const char * argv[])
     GameCore* game = new GameCore(view_width, view_height);
     game->set_sounds(move_sound, coin_sound, kill_sound, spawn_sound);
     
-    //TimeStamp old_time(Clock::now());
     clock_t old_time = clock();
     
     bool done = false;
@@ -91,13 +85,7 @@ int main(int argc, const char * argv[])
             }
         }
         
-        //TimeStamp new_time(Clock::now());
-        //Seconds elapsed = new_time - old_time;
-        //game->update(elapsed.count());
-        //old_time = new_time;
-        
         clock_t new_time = clock();
-        //std::cout << new_time - old_time << std::endl;
         game->update((float)(new_time - old_time) / (float)CLOCKS_PER_SEC);
         old_time = new_time;
         

@@ -15,7 +15,7 @@
 		6D33AF24190D8E6B003DD010 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D33AF23190D8E6B003DD010 /* Media.xcassets */; };
 		6D9B8365190026E50003162D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B8364190026E50003162D /* Cocoa.framework */; };
 		6D9B836F190026E50003162D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B836D190026E50003162D /* InfoPlist.strings */; };
-		6D9B8371190026E50003162D /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B8370190026E50003162D /* main.mm */; };
+		6D9B8371190026E50003162D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B8370190026E50003162D /* main.cpp */; };
 		6D9B8375190026E50003162D /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B8373190026E50003162D /* Credits.rtf */; };
 		6D9B8385190026E50003162D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B8364190026E50003162D /* Cocoa.framework */; };
 		6D9B83A11900283B0003162D /* SDLClasses.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B839D1900283B0003162D /* SDLClasses.cpp */; };
@@ -76,7 +76,7 @@
 		6D9B8369190026E50003162D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6D9B836C190026E50003162D /* LD29-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LD29-Info.plist"; sourceTree = "<group>"; };
 		6D9B836E190026E50003162D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		6D9B8370190026E50003162D /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
+		6D9B8370190026E50003162D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		6D9B8372190026E50003162D /* LD29-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LD29-Prefix.pch"; sourceTree = "<group>"; };
 		6D9B8374190026E50003162D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		6D9B8382190026E50003162D /* LD29Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LD29Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -203,7 +203,7 @@
 				6D33AF18190D5FA1003DD010 /* spawn.wav */,
 				6D9B836C190026E50003162D /* LD29-Info.plist */,
 				6D9B836D190026E50003162D /* InfoPlist.strings */,
-				6D9B8370190026E50003162D /* main.mm */,
+				6D9B8370190026E50003162D /* main.cpp */,
 				6D9B8372190026E50003162D /* LD29-Prefix.pch */,
 				6D9B8373190026E50003162D /* Credits.rtf */,
 				6D33AF23190D8E6B003DD010 /* Media.xcassets */,
@@ -370,7 +370,7 @@
 				6D9DE8B3190BB55100D245CE /* GameCore.cpp in Sources */,
 				6DDECEB31903DD0D00F3B6B0 /* DelaunayTriangulation.cpp in Sources */,
 				6DDECEB01903BE5600F3B6B0 /* Camera.cpp in Sources */,
-				6D9B8371190026E50003162D /* main.mm in Sources */,
+				6D9B8371190026E50003162D /* main.cpp in Sources */,
 				6D9B83C0190028520003162D /* Matrix2.cpp in Sources */,
 				6D9B83C4190028520003162D /* Quaternion.cpp in Sources */,
 				6D9B83BE190028520003162D /* MathUtility.cpp in Sources */,
