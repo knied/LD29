@@ -18,8 +18,8 @@ struct Matrix {
     
     Type data[R * C];
     
-    Matrix() : Matrix{1} {}
-    explicit Matrix(const Type& t) {
+    //Matrix() : Matrix{1} {}
+    explicit Matrix(const Type& t = Type(1)) {
         for (int col = 0; col < C; ++col) {
             for (int row = 0; row < R; ++row) {
                 (*this)(row,col) = row == col ? t : static_cast<Type>(0);
@@ -74,35 +74,35 @@ struct Matrix {
     
 template<typename Type, int R, int C>
 inline Matrix<Type, R, C> operator + (const Matrix<Type, R, C>& a, const Matrix<Type, R, C>& b) {
-    Matrix<Type, R, C> result{a};
+    Matrix<Type, R, C> result(a);
     result += b;
     return result;
 }
 
 template<typename Type, int R, int C>
 inline Matrix<Type, R, C> operator + (const Matrix<Type, R, C>& a, const Type& s) {
-    Matrix<Type, R, C> result{a};
+    Matrix<Type, R, C> result(a);
     result += s;
     return result;
 }
 
 template<typename Type, int R, int C>
 inline Matrix<Type, R, C> operator + (const Type& s, const Matrix<Type, R, C>& a) {
-    Matrix<Type, R, C> result{a};
+    Matrix<Type, R, C> result(a);
     result += s;
     return result;
 }
 
 template<typename Type, int R, int C>
 inline Matrix<Type, R, C> operator - (const Matrix<Type, R, C>& a, const Matrix<Type, R, C>& b) {
-    Matrix<Type, R, C> result{a};
+    Matrix<Type, R, C> result(a);
     result -= b;
     return result;
 }
 
 template<typename Type, int R, int C>
 inline Matrix<Type, R, C> operator - (const Matrix<Type, R, C>& a, const Type& s) {
-    Matrix<Type, R, C> result{a};
+    Matrix<Type, R, C> result(a);
     result -= s;
     return result;
 }
@@ -133,28 +133,28 @@ inline Vector<Type, R> operator * (const Matrix<Type, R, C>& a, const Vector<Typ
 
 template<typename Type, int R, int C>
 inline Matrix<Type, R, C> operator * (const Matrix<Type, R, C>& a, const Type& s) {
-    Matrix<Type, R, C> result{a};
+    Matrix<Type, R, C> result(a);
     result *= s;
     return result;
 }
 
 template<typename Type, int R, int C>
 inline Matrix<Type, R, C> operator * (const Type& s, const Matrix<Type, R, C>& a) {
-    Matrix<Type, R, C> result{a};
+    Matrix<Type, R, C> result(a);
     result *= s;
     return result;
 }
 
 template<typename Type, int R, int C>
 inline Matrix<Type, R, C> operator / (const Matrix<Type, R, C>& a, const Type& s) {
-    Matrix<Type, R, C> result{a};
+    Matrix<Type, R, C> result(a);
     result /= s;
     return result;
 }
     
 template<typename Type, int R, int C>
 inline Matrix<Type, R, C> transpose(const Matrix<Type, R, C>& a) {
-    Matrix<Type, R, C> result{static_cast<Type>(0)};
+    Matrix<Type, R, C> result(static_cast<Type>(0));
     for (int i = 0; i < C; ++i) {
         for (int j = 0; j < R; ++j) {
             result(i,j) = a(j,i);

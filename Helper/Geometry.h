@@ -17,10 +17,10 @@
 struct Edge2;
 
 struct Point2 {
-    Point2(Vector2 const& l) : l(l) {}
+    Point2(Vector2 const& l) : l(l), on_hull(false) {}
     
     Vector2 l; // location
-    bool on_hull = false;
+    bool on_hull;
 }; // Point2
 
 struct Face2;
@@ -41,16 +41,16 @@ struct Face2 {
 }; // Face2
 
 struct VoronoiCell2 {
-    VoronoiCell2(Point2* p, std::vector<Point2*> const& n) : p(p), n(n) {}
+    VoronoiCell2(Point2* p, std::vector<Point2*> const& n) : p(p), n(n), building(0), type(1), coins(0), spawn(0), kingdom(-1) {}
     
     Point2* p;
     std::vector<Point2*> n;
     std::vector<Vector3> vertices;
-    int building = 0;
-    int type = 1;
-    int coins = 0;
-    int spawn = 0;
-    int kingdom = -1;
+    int building;
+    int type;
+    int coins;
+    int spawn;
+    int kingdom;
 }; // VoronoiCell2
 
 // next index in counter clockwise direction

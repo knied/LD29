@@ -18,10 +18,10 @@ struct Matrix<Type,2,2> {
     
     Type data[R * C];
     
-    Matrix() : Matrix{1, 0,
-                      0, 1} {}
-    explicit Matrix(const Type& t) : Matrix{t, 0,
-                                            0, t} {}
+    explicit Matrix(const Type& t = Type(1)) {
+        (*this)(0,0) = t; (*this)(0,1) = Type(0);
+        (*this)(1,0) = Type(0); (*this)(1,1) = t;
+    }
     Matrix(const Type& m00, const Type& m01,
            const Type& m10, const Type& m11) {
         (*this)(0,0) = m00; (*this)(0,1) = m01;
@@ -74,8 +74,8 @@ inline Type det(const Matrix<Type,2,2>& a) {
 
 template<typename Type>
 inline Matrix<Type,2,2> inverse(const Matrix<Type,2,2>& a) {
-    Matrix<Type,2,2> result{a(1,1), -a(0,1),
-                            -a(1,0), a(0,0)};
+    Matrix<Type,2,2> result(a(1,1), -a(0,1),
+                            -a(1,0), a(0,0));
     return result / det(a);
 }
 

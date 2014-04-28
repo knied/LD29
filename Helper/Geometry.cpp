@@ -8,17 +8,47 @@
 
 #include "Geometry.h"
 
-Face2::Face2(Point2* p0, Point2* p1, Point2* p2)
-: p{p0, p1, p2}, e{{this, 0, 0}, {this, 1, 0}, {this, 2, 0}} {}
-Face2::Face2(Face2 const& f)
-: p{f.p[0], f.p[1], f.p[2]}, e{{this, 0, f.e[0].e}, {this, 1, f.e[1].e}, {this, 2, f.e[2].e}} {}
+Face2::Face2(Point2* p0, Point2* p1, Point2* p2) {
+    p[0] = p0;
+    p[1] = p1;
+    p[2] = p2;
+    e[0].f = this;
+    e[0].i = 0;
+    e[0].e = 0;
+    e[1].f = this;
+    e[1].i = 1;
+    e[1].e = 0;
+    e[2].f = this;
+    e[2].i = 2;
+    e[2].e = 0;
+}
+Face2::Face2(Face2 const& f) {
+    p[0] = f.p[0];
+    p[1] = f.p[1];
+    p[2] = f.p[2];
+    e[0].f = this;
+    e[0].i = 0;
+    e[0].e = f.e[0].e;
+    e[1].f = this;
+    e[1].i = 1;
+    e[1].e = f.e[1].e;
+    e[2].f = this;
+    e[2].i = 2;
+    e[2].e = f.e[2].e;
+}
 Face2 const& Face2::operator = (Face2 const& f) {
     p[0] = f.p[0];
     p[1] = f.p[1];
     p[2] = f.p[2];
-    e[0] = {this, 0, f.e[0].e};
-    e[1] = {this, 1, f.e[1].e};
-    e[2] = {this, 2, f.e[2].e};
+    e[0].f = this;
+    e[0].i = 0;
+    e[0].e = f.e[0].e;
+    e[1].f = this;
+    e[1].i = 1;
+    e[1].e = f.e[1].e;
+    e[2].f = this;
+    e[2].i = 2;
+    e[2].e = f.e[2].e;
     return *this;
 }
 
@@ -170,7 +200,9 @@ Point2* support(std::vector<Point2*> const& points, Vector2 const& direction) {
 }
 
 std::vector<Point2*> convex_hull(std::vector<Point2*> const& points) {
-    std::vector<Point2*> hull{support(points, Vector2(-1.0f, 0.0f)), support(points, Vector2(1.0f, 0.0f))};
+    std::vector<Point2*> hull(2);
+    hull[0] = support(points, Vector2(-1.0f, 0.0f));
+    hull[1] = support(points, Vector2(1.0f, 0.0f));
     int i0 = 0;
     do {
         int i1 = i0+1 < hull.size() ? i0+1 : 0;
@@ -250,19 +282,20 @@ bool segment_intersection(Vector2 const& p0, Vector2 const& p1, Vector2 const& q
     return (t >= 0.0f) && (t <= 1.0f) && (s >= 0.0f) && (s <= 1.0f);
 }
 
+struct Intersection {
+    Vector2 pos;
+    bool start;
+    int i0;
+    int i1;
+    int j0;
+    int j1;
+};
+
 std::vector<Vector2> cut(std::vector<Vector2> const& a, std::vector<Vector2> const& b) {
     std::vector<Vector2> result;
     std::vector<Vector2> br = b;
     std::reverse(br.begin(), br.end());
     
-    struct Intersection {
-        Vector2 pos;
-        bool start;
-        int i0;
-        int i1;
-        int j0;
-        int j1;
-    };
     std::vector<Intersection> intersections;
     
     for (int i0 = 0; i0 < a.size(); ++i0) {
@@ -298,8 +331,8 @@ std::vector<Vector2> cut(std::vector<Vector2> const& a, std::vector<Vector2> con
                 // is this a valid cut?
                 bool valid = true;
                 Vector2 n = vector_normal(a[i] - br[j]);
-                for (Vector2 const& p : br) {
-                    if (dot(n, p - br[j]) > 0.0f) {
+                for (int p = 0; p < br.size(); ++p) {
+                    if (dot(n, br[p] - br[j]) > 0.0f) {
                         valid = false;
                         break;
                     }

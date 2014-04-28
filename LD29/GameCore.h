@@ -25,7 +25,7 @@ struct Unit {
     int coins;
     int kingdom;
     int type; // 0: king; 1: troops
-    bool dead = false;
+    bool dead;
 };
 
 class GameCore {
@@ -37,7 +37,7 @@ class GameCore {
     float _camera_zoom;
     Vector3 _target_camera_position;
     
-    std::mt19937 _rand_engine;
+    //std::mt19937 _rand_engine;
     
     VoronoiDiagram* _world;
     std::vector<Vector3> _flag_mesh;

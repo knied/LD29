@@ -24,12 +24,18 @@ struct Vector<Type,2> {
     /*
      * Create a vector an initialize each element with 0.
      */
-    Vector() : Vector{0, 0} {}
+    Vector() {
+        data[0] = Type(0);
+        data[1] = Type(0);
+    }
     
     /*
      * Create a vector an initialize each element with t.
      */
-    explicit Vector(const Type& t) : Vector{t, t} {}
+    explicit Vector(const Type& t) {
+        data[0] = t;
+        data[1] = t;
+    }
     
     /*
      * Create a vector from the provided values
@@ -128,68 +134,68 @@ struct Vector<Type,2> {
 
 template<typename Type>
 inline Vector<Type, 2> operator + (const Vector<Type, 2>& a, const Vector<Type, 2>& b) {
-    return Vector<Type, 2>{a[0] + b[0],
-                           a[1] + b[1]};
+    return Vector<Type, 2>(a[0] + b[0],
+                           a[1] + b[1]);
 }
 
 template<typename Type>
 inline Vector<Type, 2> operator + (const Vector<Type, 2>& a, const Type& s) {
-    return Vector<Type, 2>{a[0] + s,
-                           a[1] + s};
+    return Vector<Type, 2>(a[0] + s,
+                           a[1] + s);
 }
 
 template<typename Type>
 inline Vector<Type, 2> operator + (const Type& s, const Vector<Type, 2>& a) {
-    return Vector<Type, 2>{a[0] + s,
-                           a[1] + s};
+    return Vector<Type, 2>(a[0] + s,
+                           a[1] + s);
 }
 
 template<typename Type>
 inline Vector<Type, 2> operator - (const Vector<Type, 2>& a, const Vector<Type, 2>& b) {
-    return Vector<Type, 2>{a[0] - b[0],
-                           a[1] - b[1]};
+    return Vector<Type, 2>(a[0] - b[0],
+                           a[1] - b[1]);
 }
 
 template<typename Type>
 inline Vector<Type, 2> operator - (const Vector<Type, 2>& a, const Type& s) {
-    return Vector<Type, 2>{a[0] - s,
-                           a[1] - s};
+    return Vector<Type, 2>(a[0] - s,
+                           a[1] - s);
 }
 
 template<typename Type>
 inline Vector<Type, 2> operator - (const Vector<Type, 2>& a) {
-    return Vector<Type, 2>{-a[0],
-                           -a[1]};
+    return Vector<Type, 2>(-a[0],
+                           -a[1]);
 }
 
 template<typename Type>
 inline Vector<Type, 2> operator * (const Vector<Type, 2>& a, const Vector<Type, 2>& b) {
-    return Vector<Type, 2>{a[0] * b[0],
-                           a[1] * b[1]};
+    return Vector<Type, 2>(a[0] * b[0],
+                           a[1] * b[1]);
 }
 
 template<typename Type>
 inline Vector<Type, 2> operator * (const Vector<Type, 2>& a, const Type& s) {
-    return Vector<Type, 2>{a[0] * s,
-                           a[1] * s};
+    return Vector<Type, 2>(a[0] * s,
+                           a[1] * s);
 }
 
 template<typename Type>
 inline Vector<Type, 2> operator * (const Type& s, const Vector<Type, 2>& a) {
-    return Vector<Type, 2>{a[0] * s,
-                           a[1] * s};
+    return Vector<Type, 2>(a[0] * s,
+                           a[1] * s);
 }
 
 template<typename Type>
 inline Vector<Type, 2> operator / (const Vector<Type, 2>& a, const Vector<Type, 2>& b) {
-    return Vector<Type, 2>{a[0] / b[0],
-                           a[1] / b[1]};
+    return Vector<Type, 2>(a[0] / b[0],
+                           a[1] / b[1]);
 }
 
 template<typename Type>
 inline Vector<Type, 2> operator / (const Vector<Type, 2>& a, const Type& s) {
-    return Vector<Type, 2>{a[0] / s,
-                           a[1] / s};
+    return Vector<Type, 2>(a[0] / s,
+                           a[1] / s);
 }
 
 template<typename Type>

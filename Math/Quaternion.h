@@ -17,7 +17,12 @@ template<typename Type>
 struct Quaternion {
     Type data[4];
     
-    Quaternion() : Quaternion{1, 0, 0, 0} {}
+    Quaternion() {
+        data[0] = Type(1);
+        data[1] = Type(0);
+        data[2] = Type(0);
+        data[3] = Type(0);
+    }
     Quaternion(const Type& real, const Type& x, const Type& y, const Type& z) {
         data[0] = real;
         data[1] = x;
@@ -107,50 +112,50 @@ struct Quaternion {
 
 template<typename Type>
 Quaternion<Type> operator + (const Quaternion<Type>& q0, const Quaternion<Type>& q1) {
-    return Quaternion<Type>{q0.data[0] + q1.data[0],
+    return Quaternion<Type>(q0.data[0] + q1.data[0],
                             q0.data[1] + q1.data[1],
                             q0.data[2] + q1.data[2],
-                            q0.data[3] + q1.data[3]};
+                            q0.data[3] + q1.data[3]);
 }
 
 template<typename Type>
 Quaternion<Type> operator - (const Quaternion<Type>& q0, const Quaternion<Type>& q1) {
-    return Quaternion<Type>{q0.data[0] - q1.data[0],
+    return Quaternion<Type>(q0.data[0] - q1.data[0],
                             q0.data[1] - q1.data[1],
                             q0.data[2] - q1.data[2],
-                            q0.data[3] - q1.data[3]};
+                            q0.data[3] - q1.data[3]);
 }
 
 template<typename Type>
 Quaternion<Type> operator * (const Quaternion<Type>& q0, const Quaternion<Type>& q1) {
-    return Quaternion<float>{q0.data[0] * q1.data[0] - q0.data[1] * q1.data[1] - q0.data[2] * q1.data[2] - q0.data[3] * q1.data[3],
+    return Quaternion<float>(q0.data[0] * q1.data[0] - q0.data[1] * q1.data[1] - q0.data[2] * q1.data[2] - q0.data[3] * q1.data[3],
                              q0.data[2] * q1.data[3] - q0.data[3] * q1.data[2] + q0.data[0] * q1.data[1] + q0.data[1] * q1.data[0],
                              q0.data[3] * q1.data[1] - q0.data[1] * q1.data[3] + q0.data[0] * q1.data[2] + q0.data[2] * q1.data[0],
-                             q0.data[1] * q1.data[2] - q0.data[2] * q1.data[1] + q0.data[0] * q1.data[3] + q0.data[3] * q1.data[0]};
+                             q0.data[1] * q1.data[2] - q0.data[2] * q1.data[1] + q0.data[0] * q1.data[3] + q0.data[3] * q1.data[0]);
 }
 
 template<typename Type>
 Quaternion<Type> operator * (const Quaternion<Type>& q, const Type& s) {
-    return Quaternion<Type>{q.data[0] * s,
+    return Quaternion<Type>(q.data[0] * s,
                             q.data[1] * s,
                             q.data[2] * s,
-                            q.data[3] * s};
+                            q.data[3] * s);
 }
 
 template<typename Type>
 Quaternion<Type> operator * (const Type& s, const Quaternion<Type>& q) {
-    return Quaternion<Type>{q.data[0] * s,
+    return Quaternion<Type>(q.data[0] * s,
                             q.data[1] * s,
                             q.data[2] * s,
-                            q.data[3] * s};
+                            q.data[3] * s);
 }
 
 template<typename Type>
 Quaternion<Type> operator / (const Quaternion<Type>& q, const Type& s) {
-    return Quaternion<Type>{q.data[0] / s,
+    return Quaternion<Type>(q.data[0] / s,
                             q.data[1] / s,
                             q.data[2] / s,
-                            q.data[3] / s};
+                            q.data[3] / s);
 }
 
 template<typename Type>
@@ -170,10 +175,10 @@ Quaternion<Type> quaternion_normal(const Quaternion<Type>& q) {
 
 template<typename Type>
 Quaternion<Type> conjugate(const Quaternion<Type>& q) {
-    return Quaternion<Type>{q.data[0],
+    return Quaternion<Type>(q.data[0],
                             -q.data[1],
                             -q.data[2],
-                            -q.data[3]};
+                            -q.data[3]);
 }
 
 template<typename Type>
@@ -188,9 +193,9 @@ Type dot(const Quaternion<Type>& q0, const Quaternion<Type>& q1) {
 
 template<typename Type>
 Vector<Type, 3> rotate(const Quaternion<Type>& q, const Vector<Type, 3>& v) {
-    Quaternion<Type> V{0, v[0], v[1], v[2]};
+    Quaternion<Type> V(0, v[0], v[1], v[2]);
     Quaternion<Type> result = q * V * conjugate(q);
-    return Vector<Type, 3>{result.data[1], result.data[2], result.data[3]};
+    return Vector<Type, 3>(result.data[1], result.data[2], result.data[3]);
 }
 
 template<typename Type>
@@ -199,11 +204,11 @@ Vector<Type, 3> euler_angles(const Quaternion<Type>& q) {
     Type square_x = q.data[1] * q.data[1];
     Type square_y = q.data[2] * q.data[2];
     Type square_z = q.data[3] * q.data[3];
-    return Vector<Type, 3>{atan2((Type)2.0 * (q.data[2] * q.data[3] + q.data[0] * q.data[1]),
+    return Vector<Type, 3>(atan2((Type)2.0 * (q.data[2] * q.data[3] + q.data[0] * q.data[1]),
                                  square_z - square_y - square_x + square_w),
                            asin((Type)2.0 * (q.data[0] * q.data[2] - q.data[1] * q.data[3])),
                            atan2((Type)2.0 * (q.data[1] * q.data[2] + q.data[0] * q.data[3]),
-                                 square_x + square_w - square_z - square_y)};
+                                 square_x + square_w - square_z - square_y));
 }
 
 template<typename Type>

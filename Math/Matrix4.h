@@ -17,22 +17,16 @@ struct Matrix<Type,4,4> {
     typedef Matrix<Type, R, C> MatrixType;
     
     Type data[R * C];
-    
-    /*
-     * Create a identity matrix.
-     */
-    Matrix() : Matrix{1, 0, 0, 0,
-                      0, 1, 0, 0,
-                      0, 0, 1, 0,
-                      0, 0, 0, 1} {}
-    
+
     /*
      * Create a diagonal matrix and initialize the diagonal with t.
      */
-    explicit Matrix(const Type& t) : Matrix{t, 0, 0, 0,
-                                            0, t, 0, 0,
-                                            0, 0, t, 0,
-                                            0, 0, 0, t} {}
+    explicit Matrix(const Type& t = Type(1)) {
+        (*this)(0,0) = t; (*this)(0,1) = Type(0); (*this)(0,2) = Type(0); (*this)(0,3) = Type(0);
+        (*this)(1,0) = Type(0); (*this)(1,1) = t; (*this)(1,2) = Type(0); (*this)(1,3) = Type(0);
+        (*this)(2,0) = Type(0); (*this)(2,1) = Type(0); (*this)(2,2) = t; (*this)(2,3) = Type(0);
+        (*this)(3,0) = Type(0); (*this)(3,1) = Type(0); (*this)(3,2) = Type(0); (*this)(3,3) = t;
+    }
     Matrix(const Type& m00, const Type& m01, const Type& m02, const Type& m03,
            const Type& m10, const Type& m11, const Type& m12, const Type& m13,
            const Type& m20, const Type& m21, const Type& m22, const Type& m23,

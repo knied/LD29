@@ -98,9 +98,9 @@ Matrix<Type, 3, 3> rotation(const Quaternion<Type>& q) {
     Type data_2_3 = q.data[2] * q.data[3];
     
     Type data_3_3 = q.data[3] * q.data[3];
-    return Matrix<Type, 3, 3>{1.0 - 2.0 * (data_2_2 + data_3_3), 2.0 * (data_1_2 - data_0_3),       2.0 * (data_1_3 + data_0_2),
+    return Matrix<Type, 3, 3>(1.0 - 2.0 * (data_2_2 + data_3_3), 2.0 * (data_1_2 - data_0_3),       2.0 * (data_1_3 + data_0_2),
                               2.0 * (data_1_2 + data_0_3),       1.0 - 2.0 * (data_1_1 + data_3_3), 2.0 * (data_2_3 - data_0_1),
-                              2.0 * (data_1_3 - data_0_2),       2.0 * (data_2_3 + data_0_1),       1.0 - 2.0 * (data_1_1 + data_2_2)};
+                              2.0 * (data_1_3 - data_0_2),       2.0 * (data_2_3 + data_0_1),       1.0 - 2.0 * (data_1_1 + data_2_2));
 }
 template<typename Type>
 Matrix<Type, 4, 4> homogeneous_rotation(const Quaternion<Type>& q) {
@@ -116,45 +116,45 @@ Matrix<Type, 4, 4> homogeneous_rotation(const Quaternion<Type>& q) {
     Type data_2_3 = q.data[2] * q.data[3];
     
     Type data_3_3 = q.data[3] * q.data[3];
-    return Matrix<Type, 4, 4>{1.0 - 2.0 * (data_2_2 + data_3_3), 2.0 * (data_1_2 - data_0_3),       2.0 * (data_1_3 + data_0_2),       0.0,
+    return Matrix<Type, 4, 4>(1.0 - 2.0 * (data_2_2 + data_3_3), 2.0 * (data_1_2 - data_0_3),       2.0 * (data_1_3 + data_0_2),       0.0,
                               2.0 * (data_1_2 + data_0_3),       1.0 - 2.0 * (data_1_1 + data_3_3), 2.0 * (data_2_3 - data_0_1),       0.0,
                               2.0 * (data_1_3 - data_0_2),       2.0 * (data_2_3 + data_0_1),       1.0 - 2.0 * (data_1_1 + data_2_2), 0.0,
-                              0.0,                               0.0,                               0.0,                               1.0};
+                              0.0,                               0.0,                               0.0,                               1.0);
 }
 
 
 template<typename Type>
 Matrix<Type, 4, 4> homogeneous_translation(const Vector<Type, 3>& t) {
-    return Matrix<Type, 4, 4>{1.0, 0.0, 0.0, t[0],
+    return Matrix<Type, 4, 4>(1.0, 0.0, 0.0, t[0],
                               0.0, 1.0, 0.0, t[1],
                               0.0, 0.0, 1.0, t[2],
-                              0.0, 0.0, 0.0, 1.0};
+                              0.0, 0.0, 0.0, 1.0);
 }
 
 template<typename Type>
 Matrix<Type, 4, 4> homogeneous_scale(const Vector<Type, 3>& s) {
-    return Matrix<Type, 4, 4>{s[0], 0.0,  0.0,  0.0,
+    return Matrix<Type, 4, 4>(s[0], 0.0,  0.0,  0.0,
                               0.0,  s[1], 0.0,  0.0,
                               0.0,  0.0,  s[2], 0.0,
-                              0.0,  0.0,  0.0,  1.0};
+                              0.0,  0.0,  0.0,  1.0);
 }
 
 template<typename Type>
 Vector<Type, 3> transformed_point(const Matrix<Type, 4, 4>& transformation, const Vector<Type, 3>& point) {
-    return Vector<Type, 3> {
+    return Vector<Type, 3> (
         transformation(0,0) * point[0] + transformation(0,1) * point[1] + transformation(0,2) * point[2] + transformation(0,3),
         transformation(1,0) * point[0] + transformation(1,1) * point[1] + transformation(1,2) * point[2] + transformation(1,3),
         transformation(2,0) * point[0] + transformation(2,1) * point[1] + transformation(2,2) * point[2] + transformation(2,3)
-    };
+    );
 }
 
 template<typename Type>
 Vector<Type, 3> transformed_vector(const Matrix<Type, 4, 4>& transformation, const Vector<Type, 3>& vector) {
-    return Vector<Type, 3> {
+    return Vector<Type, 3> (
         transformation(0,0) * vector[0] + transformation(0,1) * vector[1] + transformation(0,2) * vector[2],
         transformation(1,0) * vector[0] + transformation(1,1) * vector[1] + transformation(1,2) * vector[2],
         transformation(2,0) * vector[0] + transformation(2,1) * vector[1] + transformation(2,2) * vector[2]
-    };
+    );
 }
 
 // Interpolation

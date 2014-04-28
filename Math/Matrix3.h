@@ -18,12 +18,11 @@ struct Matrix<Type,3,3> {
     
     Type data[R * C];
     
-    Matrix() : Matrix{1, 0, 0,
-                      0, 1, 0,
-                      0, 0, 1} {}
-    explicit Matrix(const Type& t) : Matrix{t, 0, 0,
-                                            0, t, 0,
-                                            0, 0, t} {}
+    explicit Matrix(const Type& t = Type(1)) {
+        (*this)(0,0) = t; (*this)(0,1) = Type(0); (*this)(0,2) = Type(0);
+        (*this)(1,0) = Type(0); (*this)(1,1) = t; (*this)(1,2) = Type(0);
+        (*this)(2,0) = Type(0); (*this)(2,1) = Type(0); (*this)(2,2) = t;
+    }
     Matrix(const Type& m00, const Type& m01, const Type& m02,
            const Type& m10, const Type& m11, const Type& m12,
            const Type& m20, const Type& m21, const Type& m22) {

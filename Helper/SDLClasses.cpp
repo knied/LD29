@@ -35,8 +35,9 @@ SDLSystem::SDLSystem(std::string const& resource_path)
         throw std::runtime_error("Error: SDL_Init");
 }
 SDLSystem::~SDLSystem() {
-    for (auto& s : _sounds) {
-        SDL_FreeWAV(s.second.wav_buffer);
+    std::map<int, Sound>::iterator it;
+    for (it = _sounds.begin(); it != _sounds.end(); ++it) {
+        SDL_FreeWAV(it->second.wav_buffer);
     }
     
     SDL_Quit();
@@ -64,7 +65,7 @@ std::string const& SDLSystem::resource_path() const {
 }
 
 std::string SDLSystem::load_text_file(std::string const& filename) const {
-    std::ifstream file(_resource_path + filename, std::ios::in | std::ios::binary);
+    std::ifstream file((_resource_path + filename).c_str(), std::ios::in | std::ios::binary);
     if (file)
     {
         std::string content;
@@ -97,7 +98,7 @@ int SDLSystem::load_sound(std::string const& filename) {
 }
 
 void SDLSystem::play_sound(int sound) {
-    auto it = _sounds.find(sound);
+    std::map<int, Sound>::iterator it = _sounds.find(sound);
     if (it == _sounds.end()) {
         std::cout << "WARNING: No sound found..." << std::endl;
         return;

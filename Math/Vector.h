@@ -24,12 +24,12 @@ struct Vector {
     /*
      * Create a vector an initialize each element with 0.
      */
-    Vector() : Vector{0} {}
+    //Vector() : Vector{0} {}
     
     /*
      * Create a vector an initialize each element with t.
      */
-    explicit Vector(const Type& t) {
+    explicit Vector(const Type& t = Type(0)) {
         for (int i = 0; i < N; ++i) {
             data[i] = t;
         }
