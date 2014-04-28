@@ -7,7 +7,6 @@
 //
 
 #include "SDLClasses.h"
-#include <OpenGL/gl.h>
 #include "Camera.h"
 #include "DelaunayTriangulation.h"
 #include "GameCore.h"
