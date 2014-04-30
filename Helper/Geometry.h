@@ -41,10 +41,10 @@ struct Face2 {
 }; // Face2
 
 struct VoronoiCell2 {
-    VoronoiCell2(Point2* p, std::vector<Point2*> const& n) : p(p), n(n) {}
+    VoronoiCell2(Point2* p, std::vector<VoronoiCell2*> const& n = {}) : p(p), n(n) {}
     
     Point2* p;
-    std::vector<Point2*> n;
+    std::vector<VoronoiCell2*> n;
     std::vector<Vector3> vertices;
     int building = 0;
     int type = 1;

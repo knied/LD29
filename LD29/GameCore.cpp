@@ -80,7 +80,7 @@ _game_over(false) {
         for (VoronoiCell2* c : _world->cells()) {
             if (c->type == 1 && valid_cell(c, cutoff)) {
                 for (VoronoiCell2* m : map) {
-                    if (std::find(m->n.begin(), m->n.end(), c->p) != m->n.end()) {
+                    if (std::find(m->n.begin(), m->n.end(), c) != m->n.end()) {
                         found = true;
                         map.push_back(c);
                         c->type = 0;
@@ -122,7 +122,7 @@ _game_over(false) {
         for (int j = 0; j < i; ++j) {
             if (std::find(_units[j].location->n.begin(),
                           _units[j].location->n.end(),
-                          c->p) != _units[j].location->n.end()) {
+                          c) != _units[j].location->n.end()) {
                 valid = false;
             }
         }
@@ -229,21 +229,18 @@ Unit& GameCore::current_unit() {
 
 std::vector<VoronoiCell2*> GameCore::valid_placements(Unit const& u) {
     std::vector<VoronoiCell2*> result;
-    for (VoronoiCell2* c : _world->cells()) {
+    for (VoronoiCell2* c : u.location->n) {
         if (c->type != 0) {
             continue;
         }
-        if (std::find(u.location->n.begin(), u.location->n.end(), c->p) == u.location->n.end()) {
-            continue;
-        }
-        bool full = false;
+        bool occupied = false;
         for (Unit& k : _units) {
             if (!k.dead && k.kingdom == u.kingdom && k.location == c) {
-                full = true;
+                occupied = true;
                 break;
             }
         }
-        if (!full) {
+        if (!occupied) {
             result.push_back(c);
         }
     }
@@ -251,25 +248,22 @@ std::vector<VoronoiCell2*> GameCore::valid_placements(Unit const& u) {
 }
 
 std::vector<VoronoiCell2*> GameCore::valid_moves(Unit const& u) {
-    std::vector<VoronoiCell2*> result;
-    for (VoronoiCell2* c : _world->cells()) {
+    std::vector<VoronoiCell2*> result{u.location};
+    for (VoronoiCell2* c : u.location->n) {
         if (c->type != 0) {
             continue;
         }
         if (u.type == 0 && c->kingdom != u.kingdom) {
             continue;
         }
-        if (u.location != c && std::find(u.location->n.begin(), u.location->n.end(), c->p) == u.location->n.end()) {
-            continue;
-        }
-        bool full = false;
+        bool occupied = false;
         for (Unit& k : _units) {
-            if (!k.dead && k.kingdom == u.kingdom && k.location != u.location && k.location == c) {
-                full = true;
+            if (!k.dead && k.kingdom == u.kingdom && k.location == c) {
+                occupied = true;
                 break;
             }
         }
-        if (!full) {
+        if (!occupied) {
             result.push_back(c);
         }
     }
@@ -412,8 +406,8 @@ bool GameCore::win_battle_at(VoronoiCell2* c) {
 }
 
 bool GameCore::danger_at(VoronoiCell2* cell) {
-    for (VoronoiCell2* c : _world->cells()) {
-        if (c->type == 0 && std::find(cell->n.begin(), cell->n.end(), c->p) != cell->n.end()) {
+    for (VoronoiCell2* c : cell->n) {
+        if (c->type == 0) {
             for (Unit& u : _units) {
                 if (!u.dead && u.kingdom != current_unit().kingdom && u.location == c && (u.type == 1 || (u.type == 0 && u.coins >= 4))) {
                     return true;

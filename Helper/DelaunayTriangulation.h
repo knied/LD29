@@ -137,19 +137,27 @@ class VoronoiDiagram {
 public:
     VoronoiDiagram(float width, float height, std::vector<Point2*> const& points) {
         DelaunayTriangulation dt(points);
-        std::map<Point2*, std::set<Point2*>> cells;
+        std::map<Point2*, std::set<Point2*>> neighbours;
         for (Face2* f : dt.faces()) {
             for (int i = 0; i < 3; ++i) {
                 Point2* p0 = f->p[i];
                 Point2* p1 = f->p[ccw_next(i)];
                 Point2* p2 = f->p[cw_next(i)];
-                cells[p0].insert(p1);
-                cells[p0].insert(p2);
+                neighbours[p0].insert(p1);
+                neighbours[p0].insert(p2);
             }
         }
         
+        std::map<Point2*, VoronoiCell2*> cells;
+        for (auto it : neighbours) {
+            cells.insert(std::make_pair(it.first, new VoronoiCell2(it.first)));
+        }
+        
         for (auto it : cells) {
-            _cells.push_back(new VoronoiCell2{it.first, std::vector<Point2*>(it.second.begin(), it.second.end())});
+            _cells.push_back(it.second);
+            for (Point2* n : neighbours[it.first]) {
+                _cells.back()->n.push_back(cells[n]);
+            }
         }
         
         for (VoronoiCell2* c : _cells) {
@@ -159,9 +167,9 @@ public:
             convex[1] = Vector2(0.5f * width, -0.5f * height);
             convex[2] = Vector2(0.5f * width, 0.5f * height);
             convex[3] = Vector2(-0.5f * width, 0.5f * height);
-            for (Point2* p : c->n) {
-                Vector2 cut = vector_normal(p->l - c->p->l);
-                float cut_d = dot(cut, p->l - c->p->l) * 0.5f - 0.01f;
+            for (VoronoiCell2* p : c->n) {
+                Vector2 cut = vector_normal(p->p->l - c->p->l);
+                float cut_d = dot(cut, p->p->l - c->p->l) * 0.5f - 0.01f;
                 std::vector<Vector2> tmp_convex;
                 for (int i0 = 0; i0 < convex.size(); ++i0) {
                     int i1 = i0+1 < convex.size() ? i0+1 : 0;
