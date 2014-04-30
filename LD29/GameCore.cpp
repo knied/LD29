@@ -8,7 +8,9 @@
 
 #include "GameCore.h"
 //#include <random>
-#include <OpenGL/gl.h>
+//#include <OpenGL/gl.h>
+#include <SDL2/SDL_opengl.h>
+#include <time.h>
 
 Color4 color_interpolation(Color4 const& color0, Color4 const& color1, float t) {
     Vector3 v0(color0[0]/255.0f, color0[1]/255.0f, color0[2]/255.0f);
@@ -69,7 +71,7 @@ void init_flag_mesh(std::vector<Vector3>& mesh) {
     Vector2 p2(x, y0);
     Vector2 p3(x, y1);
     Vector2 p4(-x, y1);
-    
+
     std::vector<Vector2> shape(5);
     shape[0] = p0;
     shape[1] = p1;
@@ -80,7 +82,7 @@ void init_flag_mesh(std::vector<Vector3>& mesh) {
     shape = cut(shape, circle(Vector2(-0.05f, 0.25f), 0.035f, 16));
     shape = cut(shape, circle(Vector2(0.05f, 0.15f), 0.035f, 16));
     shape = cut(shape, circle(Vector2(0.05f, 0.25f), 0.035f, 16));
-    
+
     mesh = to_xy(triangulate(shape));
 }
 
@@ -93,14 +95,14 @@ void init_small_flag_mesh(std::vector<Vector3>& mesh) {
     Vector2 p2(x, y0);
     Vector2 p3(x, y1);
     Vector2 p4(-x, y1);
-    
+
     std::vector<Vector2> shape(5);
     shape[0] = p0;
     shape[1] = p1;
     shape[2] = p2;
     shape[3] = p3;
     shape[4] = p4;
-    
+
     mesh = to_xy(triangulate(shape));
 }
 
@@ -109,7 +111,7 @@ void init_crown_mesh(std::vector<Vector3>& mesh) {
     float y0 = 0.025f;
     float y1 = 0.05f;
     float x1 = 0.5f * x0;
-    
+
     Vector2 p0(-x0, 0.0f);
     Vector2 p1(x0, 0.0f);
     Vector2 p2(x0, y1);
@@ -117,7 +119,7 @@ void init_crown_mesh(std::vector<Vector3>& mesh) {
     Vector2 p4(0.0f, y1);
     Vector2 p5(-x1, y0);
     Vector2 p6(-x0, y1);
-    
+
     std::vector<Vector2> shape(7);
     shape[0] = p0;
     shape[1] = p1;
@@ -126,25 +128,25 @@ void init_crown_mesh(std::vector<Vector3>& mesh) {
     shape[4] = p4;
     shape[5] = p5;
     shape[6] = p6;
-    
+
     mesh = to_xy(triangulate(shape));
 }
 
 void init_decal_mesh(std::vector<Vector3>& mesh) {
     float x0 = 0.05f;
     float y0 = 0.023f;
-    
+
     Vector2 p0(-x0, 0.0f);
     Vector2 p1(x0, 0.0f);
     Vector2 p2(x0, y0);
     Vector2 p3(-x0, y0);
-    
+
     std::vector<Vector2> shape(4);
     shape[0] = p0;
     shape[1] = p1;
     shape[2] = p2;
     shape[3] = p3;
-    
+
     mesh = to_xy(triangulate(shape));
 }
 
@@ -156,18 +158,18 @@ void init_indicator_mesh(std::vector<Vector3>& mesh) {
     float x0 = 0.05f;
     float y0 = 0.1f;
     float y1 = 0.15f;
-    
+
     Vector2 p0(0.0f, 0.0f);
     Vector2 p1(x0, y1);
     Vector2 p2(0.0f, y0);
     Vector2 p3(-x0, y1);
-    
+
     std::vector<Vector2> shape(4);
     shape[0] = p0;
     shape[1] = p1;
     shape[2] = p2;
     shape[3] = p3;
-    
+
     mesh = to_xy(triangulate(shape));
 }
 
@@ -179,7 +181,7 @@ void init_mine_mesh(std::vector<Vector3>& base_mesh, std::vector<Vector3>& wheel
     float y1 = 4.0f * d;
     float z0 = d * 0.25f;
     float z1 = d;
-    
+
     Vector3 p0(-x1, 0.0f, z1);
     Vector3 p1(-x0, 0.0f, z1);
     Vector3 p2(-x0, y0, z0);
@@ -188,7 +190,7 @@ void init_mine_mesh(std::vector<Vector3>& base_mesh, std::vector<Vector3>& wheel
     Vector3 p5(x1, 0.0f, z1);
     Vector3 p6(x1, y1, 0.0f);
     Vector3 p7(-x1, y1, 0.0f);
-    
+
     Vector3 q0(-x1, 0.0f, -z1);
     Vector3 q1(-x0, 0.0f, -z1);
     Vector3 q2(-x0, y0, -z0);
@@ -197,7 +199,7 @@ void init_mine_mesh(std::vector<Vector3>& base_mesh, std::vector<Vector3>& wheel
     Vector3 q5(x1, 0.0f, -z1);
     Vector3 q6(x1, y1, 0.0f);
     Vector3 q7(-x1, y1, 0.0f);
-    
+
     base_mesh.resize(2 * 18);
     base_mesh[0] = p0;
     base_mesh[1] = p1;
@@ -217,7 +219,7 @@ void init_mine_mesh(std::vector<Vector3>& base_mesh, std::vector<Vector3>& wheel
     base_mesh[15] = p3;
     base_mesh[16] = p5;
     base_mesh[17] = p6;
-    
+
     base_mesh[18] = q0;
     base_mesh[19] = q1;
     base_mesh[20] = q2;
@@ -236,29 +238,29 @@ void init_mine_mesh(std::vector<Vector3>& base_mesh, std::vector<Vector3>& wheel
     base_mesh[33] = q3;
     base_mesh[34] = q5;
     base_mesh[35] = q6;
-    
+
     std::vector<Vector2> wheel = circle(Vector2(), 3.0f * d, 16);
     wheel = cut(wheel, circle(Vector2(), 2.5f * d, 16));
-    
+
     wheel_mesh = to_xy(triangulate(wheel));
-    
+
     Vector3 w0(-d * 0.25f, -2.75f * d, 0.0f);
     Vector3 w1(d * 0.25f, -2.75f * d, 0.0f);
     Vector3 w2(d * 0.25f, 2.75f * d, 0.0f);
     Vector3 w3(-d * 0.25f, 2.75f * d, 0.0f);
-    
+
     Vector3 w4(-d * 2.75f, -0.25f * d, 0.0f);
     Vector3 w5(d * 2.75f, -0.25f * d, 0.0f);
     Vector3 w6(d * 2.75f, 0.25f * d, 0.0f);
     Vector3 w7(-d * 2.75f, 0.25f * d, 0.0f);
-    
+
     wheel_mesh.push_back(w0);
     wheel_mesh.push_back(w1);
     wheel_mesh.push_back(w2);
     wheel_mesh.push_back(w0);
     wheel_mesh.push_back(w2);
     wheel_mesh.push_back(w3);
-    
+
     wheel_mesh.push_back(w4);
     wheel_mesh.push_back(w5);
     wheel_mesh.push_back(w6);
@@ -278,9 +280,9 @@ void init_star_mesh(std::vector<Vector3>& mesh) {
 
 void init_gl(Camera const& camera, Color4 const& clear_color) {
     glClearColor(clear_color[0]/255.0f, clear_color[1]/255.0f, clear_color[2]/255.0f, 1.0f);
-    
+
     glEnable(GL_DEPTH_TEST);
-    
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glLoadMatrixf(&camera.projection()(0,0));
@@ -290,15 +292,15 @@ void draw(Matrix4 const& model_view, std::vector<Vector3> const& shape, Color4 c
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glLoadMatrixf(&model_view(0,0));
-    
+
     glBegin(GL_TRIANGLES);
-    
+
     glColor3ub(color[0], color[1], color[2]);
-    
+
     for (int i = 0; i < shape.size(); ++i) {
         glVertex3fv(&shape[i][0]);
     }
-    
+
     glEnd();
 }
 
@@ -362,42 +364,42 @@ int rand(int min, int max) {
 GameCore::GameCore(int view_width, int view_height)
 : _view_width(view_width), _view_height(view_height),
 _camera_zoom(0.0f), _second_timer(0.0f)/*, _rand_engine((unsigned int)time(0))*/,
-_game_over(false) {
+_game_over(false), _turn_timer(0.0f) {
     srand((unsigned int)time(0));
-    
+
     _kingdom_colors[0] = Color4(100, 30, 30, 255);
     _kingdom_colors[1] = Color4(30, 100, 100, 255);
     _kingdom_colors[2] = Color4(30, 100, 30, 255);
     _kingdom_colors[3] = Color4(30, 30, 100, 255);
-    
+
     Color4 diff(80, 80, 80, 0);
     _kingdom_map_colors[0] = _kingdom_colors[0] + diff;
     _kingdom_map_colors[1] = _kingdom_colors[1] + diff;
     _kingdom_map_colors[2] = _kingdom_colors[2] + diff;
     _kingdom_map_colors[3] = _kingdom_colors[3] + diff;
-    
+
     Color4 diff2(45, 45, 45, 0);
     _kingdom_map_highlight_colors[0] = _kingdom_map_colors[0] + diff2;
     _kingdom_map_highlight_colors[1] = _kingdom_map_colors[1] + diff2;
     _kingdom_map_highlight_colors[2] = _kingdom_map_colors[2] + diff2;
     _kingdom_map_highlight_colors[3] = _kingdom_map_colors[3] + diff2;
-    
+
     Color4 diff3(30, 30, 30, 0);
     _select_color = color_interpolation(_kingdom_colors[0], Color4(255, 255, 255, 255), 0.9f);
-    
+
     _background_color = Color4(200, 220, 255, 255);
-    
+
     _cell_color = Color4(150, 210, 160, 255);
-    
+
     //_indicator_color = Color4(100, 0, 0, 255);
     _indicator_color = _kingdom_colors[0];
-    
+
     _gold_color = Color4(200, 200, 64, 255);
-    
+
     float const size = 7.5f;
-    
+
     std::vector<Vector2> points;
-    
+
     //std::uniform_real_distribution<float> dist(-size*0.5f,size*0.5f);
     for (int i = 0; i < 200; ++i) {
         points.push_back(Vector2(frand(-size*0.5f,size*0.5f), frand(-size*0.5f,size*0.5f)));
@@ -409,12 +411,12 @@ _game_over(false) {
     for (int i = 0; i < points.size(); ++i) {
         ppoints.push_back(new Point2(points[i]));
     }
-    
+
     _world = new VoronoiDiagram(size, size, ppoints);
-    
+
     // Generate a map:
     float cutoff = 0.5f * size - 0.5f;
-    
+
     // 1.) find a valid seed cell
     std::vector<VoronoiCell2*> map;
     for (int i = 0; i < _world->cells().size(); ++i) {
@@ -425,7 +427,7 @@ _game_over(false) {
             break;
         }
     }
-    
+
     // 2.) expand the map starting from the seed. All cells have to be connected.
     for (int i = 0; i < 100; ++i) {
         bool found = false;
@@ -452,7 +454,7 @@ _game_over(false) {
             //throw std::runtime_error("malformed point set.");
         }
     }
-    
+
     // 3.) place mines
     //std::uniform_int_distribution<int> dist3(0, 8);
     for (int i = 0; i < 20; ++i) {
@@ -465,7 +467,7 @@ _game_over(false) {
             }
         }
     }
-    
+
     _selected_cell = 0;
     _turn_state = 0;
     _turn_timer = 0.0f;
@@ -497,7 +499,7 @@ _game_over(false) {
             }
         }
     }
-    
+
     init_flag_mesh(_flag_mesh);
     init_small_flag_mesh(_small_flag_mesh);
     init_dot_mesh(_coin_mesh, 0.025f, 16);
@@ -506,9 +508,9 @@ _game_over(false) {
     init_mine_mesh(_mine_base_mesh, _mine_wheel_mesh);
     init_decal_mesh(_decal_mesh);
     init_star_mesh(_star_mesh);
-    
+
     init_gl(_camera, _background_color);
-    
+
     _projection = _camera.projection();
 }
 
@@ -527,7 +529,7 @@ void GameCore::mouse_dragged(MouseButton button, float xrel, float yrel) {
 }
 
 void GameCore::mouse_down(MouseButton button, float x, float y) {
-    
+
 }
 
 void GameCore::mouse_up(MouseButton button, float x, float y) {
@@ -545,7 +547,7 @@ void GameCore::mouse_up(MouseButton button, float x, float y) {
             }
             current_unit().destination = _selected_cell;
         }
-        
+
         next_turn_state();*/
     }
 }
@@ -573,13 +575,13 @@ void GameCore::update_camera(float dt) {
     if (_camera_zoom > 5.0f) {
         _camera_zoom = 5.0f;
     }
-    
+
     if (_game_over) {
         _target_camera_position = Vector3(_winner_location->p->l[0], 0.0f, _winner_location->p->l[1]);
     } else {
         _target_camera_position = Vector3(current_unit().location->p->l[0], 0.0f, current_unit().location->p->l[1]);
     }
-    
+
     _camera.set_rotaton(_camera_rotation[0], _camera_rotation[1]);
     _camera.set_zoom(_camera_zoom);
     Vector3 camera_position = _camera.position();
@@ -587,7 +589,7 @@ void GameCore::update_camera(float dt) {
     _camera.set_position(camera_position + camera_target_delta * dt * 5.0f);
     _view = _camera.transformation().world_to_local();
     _camera_model = _camera.transformation().local_to_world();
-    
+
     _view_projection = _projection * _view;
     Vector3 camera_normal = transformed_vector(_camera_model, Vector3(0.0f, 0.0f, 1.0f));
     Vector3 xz = vector_normal(camera_normal - Vector3(0.0f, 1.0f, 0.0f) * dot(Vector3(0.0f, 1.0f, 0.0f), camera_normal));
@@ -656,11 +658,11 @@ void GameCore::next_turn_state() {
     if (_game_over) {
         return;
     }
-    
+
     if (_turn_state == 2) {
         current_unit().location = current_unit().destination;
     }
-    
+
     std::set<int> remaining_kingdoms;
     for (int ijk2 = 0; ijk2 < _units.size(); ++ijk2) {
         Unit& u = _units[ijk2];
@@ -687,7 +689,7 @@ void GameCore::next_turn_state() {
             }
         }
     }
-    
+
     _turn_timer = 0.0f;
     if (!(_game_over && _turn_state == 1)) {
         _turn_state++;
@@ -699,7 +701,7 @@ void GameCore::next_turn_state() {
         while (current_unit().dead) {
             _current_unit = _current_unit+1 < _units.size() ? _current_unit+1 : 0;
         }
-        
+
         // update mines
         if (_previous_unit >= _current_unit) {
             //std::cout << "==== NEXT ====" << std::endl;
@@ -715,7 +717,7 @@ void GameCore::next_turn_state() {
             }
         }
     }
-    
+
     //std::cout << "state: " << _turn_state << std::endl;
     //std::cout << "unit: " << _current_unit << std::endl;
     //std::cout << "kingdom: " << current_unit().kingdom << std::endl;
@@ -741,9 +743,9 @@ void GameCore::draw_unit(Unit const& unit) {
     Vector3 position = linear_interpolation(Vector3(unit.location->p->l[0], 0.0f, unit.location->p->l[1]),
                                             Vector3(unit.destination->p->l[0], 0.0f, unit.destination->p->l[1]),
                                             _turn_timer);
-    
+
     Matrix4 model = homogeneous_translation(position);
-    
+
     float t = 0.0f;
     if (current_unit().location == unit.location || _game_over) {
         t = 0.01f * (1.0f + cosf(4.0f * PI * _second_timer));
@@ -769,7 +771,7 @@ void GameCore::draw_unit(Unit const& unit) {
             offset = homogeneous_translation(Vector3(0.05f, t + 0.15f, 0.0f));
             draw(_view * model * _sprite_rotation * offset, _coin_mesh, _gold_color);
         }
-        
+
         if (_game_over) {
             offset = homogeneous_translation(Vector3(0.0f, 4.0f * t + 0.45f, 0.0f));
             draw(_view * model * _sprite_rotation * offset, _star_mesh, _gold_color);
@@ -828,7 +830,7 @@ void GameCore::troops_ai(std::vector<VoronoiCell2*> const& valid) {
         if (win_battle_at(c)) {
             value += 40;
         }
-        
+
         if (value > max_value) {
             max_value = value;
             destinations.clear();
@@ -837,7 +839,7 @@ void GameCore::troops_ai(std::vector<VoronoiCell2*> const& valid) {
             destinations.push_back(c);
         }
     }
-    
+
     //std::uniform_int_distribution<int> dist(0, (int)destinations.size()-1);
     VoronoiCell2* destination = destinations[rand(0, (int)destinations.size()-1)];
     perform_move(destination);
@@ -864,7 +866,7 @@ void GameCore::king_ai(std::vector<VoronoiCell2*> const& valid) {
             if (c->coins > 0) {
                 value += 10;
             }
-            
+
             if (value > max_value) {
                 max_value = value;
                 destinations.clear();
@@ -873,7 +875,7 @@ void GameCore::king_ai(std::vector<VoronoiCell2*> const& valid) {
                 destinations.push_back(c);
             }
         }
-        
+
         //std::uniform_int_distribution<int> dist(0, (int)destinations.size()-1);
         VoronoiCell2* destination = destinations[rand(0, (int)destinations.size()-1)];
         perform_move(destination);
@@ -883,14 +885,14 @@ void GameCore::king_ai(std::vector<VoronoiCell2*> const& valid) {
 void GameCore::spawn_unit(VoronoiCell2* location, int kingdom) {
     std::vector<Unit>::iterator it = _units.insert(_units.begin()+_current_unit, Unit());
     _current_unit++;
-    
+
     it->location = location;
     it->destination = location;
     it->kingdom = kingdom;
     it->type = 1;
     it->coins = 0;
     it->dead = false;
-    
+
     _sound_queue.push_back(_spawn_sound);
 }
 
@@ -924,26 +926,23 @@ void GameCore::remove_kingdom(int kingdom) {
 }
 
 void GameCore::update(float dt) {
-    dt *= 16.0f;
-    //std::cout << dt << std::endl;
-    
     _second_timer += dt;
     if (_second_timer > 1.0f) {
-        _second_timer -= 1.0f;
+        _second_timer = 0.0f;
     }
-    
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
     update_camera(dt);
-    
+
     std::vector<VoronoiCell2*> valid;
     if (current_unit().coins >= 4) {
         valid = valid_placements(current_unit());
     } else {
         valid = valid_moves(current_unit());
     }
-    
-    
+
+
     _selected_cell = 0;
     if (current_unit().kingdom == 0 && _turn_state == 1) {
         for (int ijk = 0; ijk < valid.size(); ++ijk) {
@@ -953,7 +952,7 @@ void GameCore::update(float dt) {
             }
         }
     }
-    
+
     for (int ijk = 0; ijk < _world->cells().size(); ++ijk) {
         VoronoiCell2* c = _world->cells()[ijk];
         if (c->type == 0) {
@@ -961,7 +960,7 @@ void GameCore::update(float dt) {
             if (c->kingdom >= 0) {
                 color = _kingdom_map_colors[c->kingdom];
             }
-            
+
             if (!_game_over && std::find(valid.begin(), valid.end(), c) != valid.end()) {
                 float t = 0.5f * (1.0f + sinf(4.0f * PI * _second_timer));
                 Color4 fade_color = _kingdom_map_highlight_colors[current_unit().kingdom];
@@ -970,11 +969,11 @@ void GameCore::update(float dt) {
                 }
                 color = color_interpolation(fade_color, color, t);
             }
-            
+
             draw(_view, c->vertices, color);
         }
     }
-    
+
     for (int ijk = 0; ijk < _world->cells().size(); ++ijk) {
         VoronoiCell2* c = _world->cells()[ijk];
         if (c->type == 0) {
@@ -986,7 +985,7 @@ void GameCore::update(float dt) {
                 Matrix4 rot = homogeneous_rotation(Quaternion<float>(Vector3(0.0f, 0.0f, 1.0f), _second_timer * 2.0f * PI));
                 draw(_view * model * _sprite_rotation * offset * rot, _mine_wheel_mesh, Color4(40, 40, 40, 255));
             }
-            
+
             if (c->coins > 0) {
                 Matrix4 model = homogeneous_translation(Vector3(c->p->l[0], 0.0f, c->p->l[1]));
                 Matrix4 offset = homogeneous_translation(Vector3(0.1f, 0.25f + 0.025f * sinf(_second_timer * 2.0f * PI), 0.1f));
@@ -994,7 +993,7 @@ void GameCore::update(float dt) {
             }
         }
     }
-    
+
     if (_turn_state == 2) {
         _turn_timer += 6.0f * dt;
     }
@@ -1004,7 +1003,7 @@ void GameCore::update(float dt) {
     if (_turn_timer > 1.0f) {
         next_turn_state();
     }
-    
+
     if (_turn_state == 1 && !_game_over) {
         if (valid.size() == 0) {
             next_turn_state();
@@ -1017,7 +1016,7 @@ void GameCore::update(float dt) {
             //next_turn_state();
         }
     }
-    
+
     for (int ijk2 = 0; ijk2 < _units.size(); ++ijk2) {
         Unit& u = _units[ijk2];
         if (!u.dead) {
@@ -1029,7 +1028,7 @@ void GameCore::update(float dt) {
             draw_unit(u);
         }
     }
-    
+
     // draw indicator
     glDisable(GL_DEPTH_TEST);
     if (current_unit().kingdom == 0 && _turn_state == 1 && _selected_cell && !_game_over) {
@@ -1040,7 +1039,7 @@ void GameCore::update(float dt) {
             Matrix4 offset = homogeneous_translation(Vector3(0.0f, t + 0.16f, 0.0f));
             draw(_view * model * _sprite_rotation * offset, _decal_mesh, _gold_color);
         } else {
-            
+
             draw(_view * model * _sprite_rotation * homogeneous_translation(Vector3(0.0f, t, 0.0f)), _indicator_mesh, _indicator_color);
         }
     }

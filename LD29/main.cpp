@@ -12,27 +12,27 @@
 #include "GameCore.h"
 #include <time.h>
 
-int main(int argc, const char * argv[])
+int main(int argc, char * argv[])
 {
     int const view_width = 1024;
     int const view_height = 768;
-    
-    SDLSystem system("resources");
+
+    SDLSystem system("Resources");
     SDLGLWindow window(system, Vector<int, 2>(view_width, view_height), "Dwarven Kingdoms");
     window.set_vsync(true);
     //window.set_fullscreen(true);
     //system.set_show_cursor(false);
-    
+
     int move_sound = system.load_sound("move.wav");
     int coin_sound = system.load_sound("coin.wav");
     int kill_sound = system.load_sound("kill.wav");
     int spawn_sound = system.load_sound("spawn.wav");
-    
+
     GameCore* game = new GameCore(view_width, view_height);
     game->set_sounds(move_sound, coin_sound, kill_sound, spawn_sound);
-    
+
     clock_t old_time = clock();
-    
+
     bool done = false;
     SDL_Event event;
     while (!done) {
@@ -43,7 +43,7 @@ int main(int argc, const char * argv[])
             }
         }
         system.update_sound();
-        
+
         while (system.poll_event(event)) {
             if (event.type == SDL_QUIT) {
                 done = true;
@@ -83,11 +83,11 @@ int main(int argc, const char * argv[])
                 }
             }
         }
-        
+
         clock_t new_time = clock();
         game->update((float)(new_time - old_time) / (float)CLOCKS_PER_SEC);
         old_time = new_time;
-        
+
         window.swap();
     }
     return 0;

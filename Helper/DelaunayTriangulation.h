@@ -13,12 +13,13 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <algorithm>
 //#include <random>
 #include "Geometry.h"
 
 class DelaunayTriangulation {
     std::vector<Face2*> _faces;
-    
+
     std::vector<Face2*>::iterator find_triangle(Point2* p) {
         std::vector<Face2*>::iterator it;
         for (it = _faces.begin(); it != _faces.end(); ++it) {
@@ -31,7 +32,7 @@ class DelaunayTriangulation {
         }
         return it;
     }
-    
+
 public:
     DelaunayTriangulation(std::vector<Point2*> const& points) {
         // create initial convex shape surrounding all points
@@ -40,17 +41,17 @@ public:
             hull[i]->on_hull = true;
         }
         _faces = triangulate_convex(hull);
-        
+
         // handle remaining points
         for (int p = 0; p < points.size(); ++p) {
             if (std::find(hull.begin(), hull.end(), points[p]) != hull.end()) continue;
-            
+
             std::vector<Face2*>::iterator it = find_triangle(points[p]);
             if (it == _faces.end()) {
                 std::cout << "WARNING: No triangle found." << std::endl;
                 continue;
             }
-            
+
             // is this point part of the convex hull?
             int edge = -1;
             for (int i = 0; i < 3; ++i) {
@@ -82,7 +83,7 @@ public:
                 stack.insert(new0);
                 stack.insert(new1);
             }
-            
+
             // make the mesh delaunay
             while (stack.size() > 0) {
                 Face2* f = *stack.begin();
@@ -119,7 +120,7 @@ public:
             delete f;
         }
     }
-    
+
     void vertex_data(std::vector<Vector3>& vertices) const {
         vertices.resize(_faces.size() * 3);
         for (int i = 0; i < _faces.size(); ++i) {
@@ -128,13 +129,13 @@ public:
             vertices[i * 3 + 2] = Vector3(_faces[i]->p[2]->l[0], 0.0f, _faces[i]->p[2]->l[1]);
         }
     }
-    
+
     std::vector<Face2*> const& faces() const { return _faces; }
 };
 
 class VoronoiDiagram {
     std::vector<VoronoiCell2*> _cells;
-    
+
 public:
     VoronoiDiagram(float width, float height, std::vector<Point2*> const& points) {
         DelaunayTriangulation dt(points);
@@ -149,11 +150,11 @@ public:
                 cells[p0].insert(p2);
             }
         }
-        
+
         for (std::map<Point2*, std::set<Point2*> >::iterator it = cells.begin(); it != cells.end(); ++it) {
             _cells.push_back(new VoronoiCell2(it->first, std::vector<Point2*>(it->second.begin(), it->second.end())));
         }
-        
+
         for (int ijk2 = 0; ijk2 < _cells.size(); ++ijk2) {
             VoronoiCell2* c = _cells[ijk2];
             std::vector<Vector2> convex;
@@ -183,7 +184,7 @@ public:
                 }
                 convex = tmp_convex;
             }
-            
+
             for (int i = 1; i < (int)convex.size()-1; ++i) {
                 c->vertices.push_back(Vector3(convex[0][0], 0.0f, convex[0][1]));
                 c->vertices.push_back(Vector3(convex[i][0], 0.0f, convex[i][1]));
@@ -197,7 +198,7 @@ public:
             delete c;
         }
     }
-    
+
     std::vector<VoronoiCell2*> const& cells() const { return _cells; }
 };
 

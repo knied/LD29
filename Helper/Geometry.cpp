@@ -7,6 +7,7 @@
 //
 
 #include "Geometry.h"
+#include <algorithm>
 
 Face2::Face2(Point2* p0, Point2* p1, Point2* p2) {
     p[0] = p0;
@@ -295,14 +296,14 @@ std::vector<Vector2> cut(std::vector<Vector2> const& a, std::vector<Vector2> con
     std::vector<Vector2> result;
     std::vector<Vector2> br = b;
     std::reverse(br.begin(), br.end());
-    
+
     std::vector<Intersection> intersections;
-    
+
     for (int i0 = 0; i0 < a.size(); ++i0) {
         int i1 = i0+1 < a.size() ? i0+1 : 0;
         for (int j0 = 0; j0 < br.size(); ++j0) {
             int j1 = j0+1 < br.size() ? j0+1 : 0;
-            
+
             Intersection inter;
             inter.i0 = i0;
             inter.i1 = i1;
@@ -314,14 +315,14 @@ std::vector<Vector2> cut(std::vector<Vector2> const& a, std::vector<Vector2> con
             }
         }
     }
-    
+
     if (intersections.size() > 0) {
         if (intersections[0].start == false) {
             intersections.push_back(intersections.front());
             intersections.erase(intersections.begin());
         }
-        
-        
+
+
     } else {
         int i = 0;
         int j = 0;
@@ -342,10 +343,10 @@ std::vector<Vector2> cut(std::vector<Vector2> const& a, std::vector<Vector2> con
                 }
                 for (int k0 = 0; k0 < a.size(); ++k0) {
                     int k1 = k0+1 < a.size() ? k0+1 : 0;
-                    
+
                     if (k0 != i && k1 != i) {
                         Vector2 tmp;
-                        
+
                         if (segment_intersection(br[j], a[i], a[k0], a[k1], tmp, true)) {
                             valid = false;
                             break;
@@ -361,7 +362,7 @@ std::vector<Vector2> cut(std::vector<Vector2> const& a, std::vector<Vector2> con
                 break;
             }
         }
-        
+
         if (found) {
             result = std::vector<Vector2>(a.begin(), a.begin()+i+1);
             result.insert(result.end(), br.begin()+j, br.end());
@@ -369,7 +370,7 @@ std::vector<Vector2> cut(std::vector<Vector2> const& a, std::vector<Vector2> con
             result.insert(result.end(), a.begin()+i, a.end());
         }
     }
-    
+
     return result;
 }
 
@@ -400,7 +401,7 @@ std::vector<Vector2> triangulate(std::vector<Vector2> const& points) {
                     triangulation.push_back(remaining[i1]);
                     triangulation.push_back(remaining[i2]);
                     remaining.erase(remaining.begin()+i1);
-                    
+
                     /*if (remaining.size() == 23) {
                         std::cout << "remaining:" << std::endl;
                         for (Vector2 const& p : remaining) {
@@ -408,7 +409,7 @@ std::vector<Vector2> triangulate(std::vector<Vector2> const& points) {
                         }
                         return triangulation;
                     }*/
-                    
+
                     break;
                 }
             }

@@ -8,13 +8,13 @@
 
 #include "Math.h"
 
-void random_seed(unsigned int seed) {
+/*void random_seed(unsigned int seed) {
     srand(seed);
-}
+}*/
 
-int random(int from, int to) {
+/*int random(int from, int to) {
     return rand() % (to - from + 1) + from;
-}
+}*/
 
 Matrix<float, 4, 4> perspective_projection(int width, int height, float field_of_view, float znear, float zfar) {
     float aspect = (float)width / (float)height;
@@ -65,7 +65,7 @@ Matrix<float, 4, 4> look_at(const Vector<float, 3> at, const Vector<float, 3> ey
     Vector<float, 3> zaxis = vector_normal(at - eye);
     Vector<float, 3> xaxis = vector_normal(cross(up, zaxis));
     Vector<float, 3> yaxis = cross(zaxis, xaxis);
-    
+
     return Matrix<float, 4, 4>(xaxis[0], xaxis[1], xaxis[2], -dot(xaxis, eye),
                                yaxis[0], yaxis[1], yaxis[2], -dot(yaxis, eye),
                                zaxis[0], zaxis[1], zaxis[2], -dot(zaxis, eye),
