@@ -9,6 +9,7 @@
 #include "GameCore.h"
 #include "GameHelper.h"
 #include <random>
+#include <set>
 
 GameCore::GameCore(int view_width, int view_height)
 : _view_width(view_width), _view_height(view_height),
@@ -43,96 +44,33 @@ _game_over(false) {
     
     _gold_color = Color4(200, 200, 64, 255);
     
-    float const size = 7.5f;
-    
-    std::vector<Vector2> points;
-    
-    std::uniform_real_distribution<float> dist(-size*0.5f,size*0.5f);
-    for (int i = 0; i < 200; ++i) {
-        points.push_back(Vector2(dist(_rand_engine), dist(_rand_engine)));
-    }
-    for (int i = 0; i < 10; ++i) {
-        points = smooth(size, size, points);
-    }
-    std::vector<Point2*> ppoints;
-    for (Vector2 const& p : points) {
-        ppoints.push_back(new Point2{p});
-    }
-    
-    _world = new VoronoiDiagram(size, size, ppoints);
-    
-    // Generate a map:
-    float cutoff = 0.5f * size - 0.5f;
-    
-    // 1.) find a valid seed cell
-    std::vector<VoronoiCell2*> map;
-    for (VoronoiCell2* c : _world->cells()) {
-        if (valid_cell(c, cutoff)) {
-            c->type = 0;
-            map.push_back(c);
-            break;
-        }
-    }
-    
-    // 2.) expand the map starting from the seed. All cells have to be connected.
-    for (int i = 0; i < 100; ++i) {
-        bool found = false;
-        for (VoronoiCell2* c : _world->cells()) {
-            if (c->type == 1 && valid_cell(c, cutoff)) {
-                for (VoronoiCell2* m : map) {
-                    if (std::find(m->n.begin(), m->n.end(), c) != m->n.end()) {
-                        found = true;
-                        map.push_back(c);
-                        c->type = 0;
-                        break;
-                    }
-                }
-            }
-            if (found) {
-                break;
-            }
-        }
-        if (!found) {
-            std::cout << i << std::endl;
-            throw std::runtime_error("malformed point set.");
-        }
-    }
-    
-    // 3.) place mines
+    // Place mines on map
     std::uniform_int_distribution<int> dist3(0, 8);
     for (int i = 0; i < 20; ++i) {
-        for (VoronoiCell2* c : _world->cells()) {
-            if (c->type == 0 && c->building != 1) {
-                c->building = 1;
-                c->spawn = dist3(_rand_engine);
-                break;
-            }
-        }
+        _map.tiles()[i]->building = 1;
+        _map.tiles()[i]->spawn = dist3(_rand_engine);
     }
     
+    // Place units on map
     _selected_cell = 0;
     _turn_state = 0;
     _turn_timer = 0.0f;
     _current_unit = 0;
-    //std::uniform_int_distribution<uint8_t> dist2(0, 200);
     _units.resize(4);
     int i = 0;
-    for (VoronoiCell2* c : _world->cells()) {
+    for (Tile* tile : _map.tiles()) {
         bool valid = true;
         for (int j = 0; j < i; ++j) {
-            if (std::find(_units[j].location->n.begin(),
-                          _units[j].location->n.end(),
-                          c) != _units[j].location->n.end()) {
+            if (neighbours(_units[j].location, tile)) {
                 valid = false;
             }
         }
-        if (valid && c->type == 0 && c->building == 1) {
-            c->kingdom = i;
-            _units[i].location = c;
-            _units[i].destination = c;
+        if (valid && tile->building == 1) {
+            tile->kingdom = i;
+            _units[i].location = tile;
+            _units[i].destination = tile;
             _units[i].coins = 4;
             _units[i].kingdom = i;
-            //_units[i].dead = i != 0;
             i++;
             if (i >= 4) {
                 break;
@@ -152,10 +90,6 @@ _game_over(false) {
     gl_init(_camera, _background_color);
     
     _projection = _camera.projection();
-}
-
-GameCore::~GameCore() {
-    delete _world;
 }
 
 void GameCore::mouse_moved(float x, float y) {
@@ -203,9 +137,9 @@ void GameCore::update_camera(float dt) {
     }
     
     if (_game_over) {
-        _target_camera_position = Vector3(_winner_location->p->l[0], 0.0f, _winner_location->p->l[1]);
+        _target_camera_position = _winner_location->center;
     } else {
-        _target_camera_position = Vector3(current_unit().location->p->l[0], 0.0f, current_unit().location->p->l[1]);
+        _target_camera_position = current_unit().location->center;
     }
     
     _camera.set_rotaton(_camera_rotation[0], _camera_rotation[1]);
@@ -227,44 +161,38 @@ Unit& GameCore::current_unit() {
     return _units[_current_unit];
 }
 
-std::vector<VoronoiCell2*> GameCore::valid_placements(Unit const& u) {
-    std::vector<VoronoiCell2*> result;
-    for (VoronoiCell2* c : u.location->n) {
-        if (c->type != 0) {
-            continue;
-        }
+std::vector<Tile*> GameCore::valid_placements(Unit const& u) {
+    std::vector<Tile*> result;
+    for (Tile* tile : u.location->neighbours) {
         bool occupied = false;
         for (Unit& k : _units) {
-            if (!k.dead && k.kingdom == u.kingdom && k.location == c) {
+            if (!k.dead && k.kingdom == u.kingdom && k.location == tile) {
                 occupied = true;
                 break;
             }
         }
         if (!occupied) {
-            result.push_back(c);
+            result.push_back(tile);
         }
     }
     return result;
 }
 
-std::vector<VoronoiCell2*> GameCore::valid_moves(Unit const& u) {
-    std::vector<VoronoiCell2*> result{u.location};
-    for (VoronoiCell2* c : u.location->n) {
-        if (c->type != 0) {
-            continue;
-        }
-        if (u.type == 0 && c->kingdom != u.kingdom) {
+std::vector<Tile*> GameCore::valid_moves(Unit const& u) {
+    std::vector<Tile*> result{u.location};
+    for (Tile* tile : u.location->neighbours) {
+        if (u.type == 0 && tile->kingdom != u.kingdom) {
             continue;
         }
         bool occupied = false;
         for (Unit& k : _units) {
-            if (!k.dead && k.kingdom == u.kingdom && k.location == c) {
+            if (!k.dead && k.kingdom == u.kingdom && k.location == tile) {
                 occupied = true;
                 break;
             }
         }
         if (!occupied) {
-            result.push_back(c);
+            result.push_back(tile);
         }
     }
     return result;
@@ -318,12 +246,12 @@ void GameCore::next_turn_state() {
         // update mines
         if (_previous_unit >= _current_unit) {
             //std::cout << "==== NEXT ====" << std::endl;
-            for (VoronoiCell2* c : _world->cells()) {
-                if (c->building == 1 && c->coins == 0) {
-                    c->spawn++;
-                    if (c->spawn >= 8) {
-                        c->spawn = 0;
-                        c->coins = 1;
+            for (Tile* tile : _map.tiles()) {
+                if (tile->building == 1 && tile->coins == 0) {
+                    tile->spawn++;
+                    if (tile->spawn >= 8) {
+                        tile->spawn = 0;
+                        tile->coins = 1;
                     }
                 }
             }
@@ -335,7 +263,7 @@ void GameCore::next_turn_state() {
     //std::cout << "kingdom: " << current_unit().kingdom << std::endl;
 }
 
-void GameCore::perform_move(VoronoiCell2* destination) {
+void GameCore::perform_move(Tile* destination) {
     destination->kingdom = current_unit().kingdom;
     if (current_unit().coins >= 4) {
         kill_unit_at(destination);
@@ -352,8 +280,8 @@ void GameCore::perform_move(VoronoiCell2* destination) {
 }
 
 void GameCore::draw_unit(Unit const& unit) {
-    Vector3 position = linear_interpolation(Vector3(unit.location->p->l[0], 0.0f, unit.location->p->l[1]),
-                                            Vector3(unit.destination->p->l[0], 0.0f, unit.destination->p->l[1]),
+    Vector3 position = linear_interpolation(unit.location->center,
+                                            unit.destination->center,
                                             _turn_timer);
     
     Matrix4 model = homogeneous_translation(position);
@@ -396,7 +324,7 @@ void GameCore::draw_unit(Unit const& unit) {
     }
 }
 
-bool GameCore::win_battle_at(VoronoiCell2* c) {
+bool GameCore::win_battle_at(Tile* c) {
     for (Unit& u : _units) {
         if (!u.dead && u.kingdom != current_unit().kingdom && u.location == c) {
             return true;
@@ -405,23 +333,21 @@ bool GameCore::win_battle_at(VoronoiCell2* c) {
     return false;
 }
 
-bool GameCore::danger_at(VoronoiCell2* cell) {
-    for (VoronoiCell2* c : cell->n) {
-        if (c->type == 0) {
-            for (Unit& u : _units) {
-                if (!u.dead && u.kingdom != current_unit().kingdom && u.location == c && (u.type == 1 || (u.type == 0 && u.coins >= 4))) {
-                    return true;
-                }
+bool GameCore::danger_at(Tile* cell) {
+    for (Tile* tile : cell->neighbours) {
+        for (Unit& u : _units) {
+            if (!u.dead && u.kingdom != current_unit().kingdom && u.location == tile && (u.type == 1 || (u.type == 0 && u.coins >= 4))) {
+                return true;
             }
         }
     }
     return false;
 }
 
-void GameCore::troops_ai(std::vector<VoronoiCell2*> const& valid) {
-    std::vector<VoronoiCell2*> destinations;
+void GameCore::troops_ai(std::vector<Tile*> const& valid) {
+    std::vector<Tile*> destinations;
     int max_value = -100000000;
-    for (VoronoiCell2* c : valid) {
+    for (Tile* c : valid) {
         int value = 0;
         if (c != current_unit().location) {
             value += 1;
@@ -448,17 +374,17 @@ void GameCore::troops_ai(std::vector<VoronoiCell2*> const& valid) {
     }
     
     std::uniform_int_distribution<int> dist(0, (int)destinations.size()-1);
-    VoronoiCell2* destination = destinations[dist(_rand_engine)];
+    Tile* destination = destinations[dist(_rand_engine)];
     perform_move(destination);
 }
 
-void GameCore::king_ai(std::vector<VoronoiCell2*> const& valid) {
+void GameCore::king_ai(std::vector<Tile*> const& valid) {
     if (current_unit().coins >= 4) {
         troops_ai(valid);
     } else {
-        std::vector<VoronoiCell2*> destinations;
+        std::vector<Tile*> destinations;
         int max_value = -100000000;
-        for (VoronoiCell2* c : valid) {
+        for (Tile* c : valid) {
             int value = 0;
             if (c != current_unit().location && danger_at(current_unit().location)) {
                 value += 20;
@@ -482,12 +408,12 @@ void GameCore::king_ai(std::vector<VoronoiCell2*> const& valid) {
         }
         
         std::uniform_int_distribution<int> dist(0, (int)destinations.size()-1);
-        VoronoiCell2* destination = destinations[dist(_rand_engine)];
+        Tile* destination = destinations[dist(_rand_engine)];
         perform_move(destination);
     }
 }
 
-void GameCore::spawn_unit(VoronoiCell2* location, int kingdom) {
+void GameCore::spawn_unit(Tile* location, int kingdom) {
     auto it = _units.insert(_units.begin()+_current_unit, Unit());
     _current_unit++;
     
@@ -500,7 +426,7 @@ void GameCore::spawn_unit(VoronoiCell2* location, int kingdom) {
     _sound_queue.push_back(_spawn_sound);
 }
 
-void GameCore::kill_unit_at(VoronoiCell2* location) {
+void GameCore::kill_unit_at(Tile* location) {
     for (Unit& u : _units) {
         if (u.location == location && !u.dead) {
             _sound_queue.push_back(_kill_sound);
@@ -514,7 +440,7 @@ void GameCore::kill_unit_at(VoronoiCell2* location) {
 }
 
 void GameCore::remove_kingdom(int kingdom) {
-    for (VoronoiCell2* c : _world->cells()) {
+    for (Tile* c : _map.tiles()) {
         if (c->kingdom == kingdom) {
             c->kingdom = -1;
         }
@@ -536,7 +462,7 @@ void GameCore::update(float dt) {
     
     update_camera(dt);
     
-    std::vector<VoronoiCell2*> valid;
+    std::vector<Tile*> valid;
     if (current_unit().coins >= 4) {
         valid = valid_placements(current_unit());
     } else {
@@ -546,49 +472,45 @@ void GameCore::update(float dt) {
     
     _selected_cell = 0;
     if (current_unit().kingdom == 0 && _turn_state == 1) {
-        for (VoronoiCell2* c : valid) {
-            if (cursor_on_shape(_view_projection, c->vertices, _cursor)) {
+        for (Tile* c : valid) {
+            if (cursor_on_shape(_view_projection, c->shape, _cursor)) {
                 _selected_cell = c;
             }
         }
     }
     
-    for (VoronoiCell2* c : _world->cells()) {
-        if (c->type == 0) {
-            Color4 color(_cell_color);
-            if (c->kingdom >= 0) {
-                color = _kingdom_map_colors[c->kingdom];
-            }
-            
-            if (!_game_over && std::find(valid.begin(), valid.end(), c) != valid.end()) {
-                float t = 0.5f * (1.0f + sinf(4.0f * PI * _second_timer));
-                Color4 fade_color = _kingdom_map_highlight_colors[current_unit().kingdom];
-                if (c == _selected_cell) {
-                    fade_color = _select_color;
-                }
-                color = color_interpolation(fade_color, color, t);
-            }
-            
-            gl_draw(_view, c->vertices, color);
+    for (Tile* c : _map.tiles()) {
+        Color4 color(_cell_color);
+        if (c->kingdom >= 0) {
+            color = _kingdom_map_colors[c->kingdom];
         }
+        
+        if (!_game_over && std::find(valid.begin(), valid.end(), c) != valid.end()) {
+            float t = 0.5f * (1.0f + sinf(4.0f * PI * _second_timer));
+            Color4 fade_color = _kingdom_map_highlight_colors[current_unit().kingdom];
+            if (c == _selected_cell) {
+                fade_color = _select_color;
+            }
+            color = color_interpolation(fade_color, color, t);
+        }
+        
+        gl_draw(_view, c->shape, color);
     }
     
-    for (VoronoiCell2* c : _world->cells()) {
-        if (c->type == 0) {
-            if (c->building == 1) {
-                Matrix4 model = homogeneous_translation(Vector3(c->p->l[0], 0.0f, c->p->l[1]));
-                Matrix4 offset = homogeneous_translation(Vector3(0.1f, 0.0f, 0.1f));
-                gl_draw(_view * model * _sprite_rotation * offset, _mine_base_mesh, Color4(40, 40, 40, 255));
-                offset = homogeneous_translation(Vector3(0.1f, 0.1f, 0.1f));
-                Matrix4 rot = homogeneous_rotation(Quaternion<float>(Vector3(0.0f, 0.0f, 1.0f), _second_timer * 2.0f * PI));
-                gl_draw(_view * model * _sprite_rotation * offset * rot, _mine_wheel_mesh, Color4(40, 40, 40, 255));
-            }
-            
-            if (c->coins > 0) {
-                Matrix4 model = homogeneous_translation(Vector3(c->p->l[0], 0.0f, c->p->l[1]));
-                Matrix4 offset = homogeneous_translation(Vector3(0.1f, 0.25f + 0.025f * sinf(_second_timer * 2.0f * PI), 0.1f));
-                gl_draw(_view * model * _sprite_rotation * offset, _coin_mesh, _gold_color);
-            }
+    for (Tile* c : _map.tiles()) {
+        if (c->building == 1) {
+            Matrix4 model = homogeneous_translation(c->center);
+            Matrix4 offset = homogeneous_translation(Vector3(0.1f, 0.0f, 0.1f));
+            gl_draw(_view * model * _sprite_rotation * offset, _mine_base_mesh, Color4(40, 40, 40, 255));
+            offset = homogeneous_translation(Vector3(0.1f, 0.1f, 0.1f));
+            Matrix4 rot = homogeneous_rotation(Quaternion<float>(Vector3(0.0f, 0.0f, 1.0f), _second_timer * 2.0f * PI));
+            gl_draw(_view * model * _sprite_rotation * offset * rot, _mine_wheel_mesh, Color4(40, 40, 40, 255));
+        }
+        
+        if (c->coins > 0) {
+            Matrix4 model = homogeneous_translation(c->center);
+            Matrix4 offset = homogeneous_translation(Vector3(0.1f, 0.25f + 0.025f * sinf(_second_timer * 2.0f * PI), 0.1f));
+            gl_draw(_view * model * _sprite_rotation * offset, _coin_mesh, _gold_color);
         }
     }
     
@@ -630,7 +552,7 @@ void GameCore::update(float dt) {
     gl_disable_depth();
     if (current_unit().kingdom == 0 && _turn_state == 1 && _selected_cell && !_game_over) {
         float t = 0.05f + 0.05f * sinf(_second_timer * 2.0f * PI);
-        Matrix4 model = homogeneous_translation(Vector3(_selected_cell->p->l[0], 0.0f, _selected_cell->p->l[1]));
+        Matrix4 model = homogeneous_translation(_selected_cell->center);
         if (current_unit().coins >= 4) {
             gl_draw(_view * model * _sprite_rotation * homogeneous_translation(Vector3(0.0f, t, 0.0f)), _small_flag_mesh, _kingdom_colors[current_unit().kingdom]);
             Matrix4 offset = homogeneous_translation(Vector3(0.0f, t + 0.16f, 0.0f));

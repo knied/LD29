@@ -10,10 +10,11 @@
 #define __LD29__GameCore__
 
 #include <iostream>
+#include <random>
 #include "Camera.h"
 #include "Types.h"
-#include "DelaunayTriangulation.h"
 #include "GameShapes.h"
+#include "GameMap.h"
 
 typedef enum {
     MBLeft,
@@ -21,8 +22,8 @@ typedef enum {
 } MouseButton;
 
 struct Unit {
-    VoronoiCell2* location;
-    VoronoiCell2* destination;
+    Tile* location;
+    Tile* destination;
     int coins;
     int kingdom;
     int type; // 0: king; 1: troops
@@ -40,7 +41,8 @@ class GameCore {
     
     std::mt19937 _rand_engine;
     
-    VoronoiDiagram* _world;
+    GameMap _map;
+    
     GLShape _flag_mesh;
     GLShape _small_flag_mesh;
     GLShape _coin_mesh;
@@ -71,16 +73,16 @@ class GameCore {
     void update_camera(float dt);
     
     Unit& current_unit();
-    std::vector<VoronoiCell2*> valid_placements(Unit const& u);
-    std::vector<VoronoiCell2*> valid_moves(Unit const& u);
-    void perform_move(VoronoiCell2* destination);
+    std::vector<Tile*> valid_placements(Unit const& u);
+    std::vector<Tile*> valid_moves(Unit const& u);
+    void perform_move(Tile* destination);
     void draw_unit(Unit const& unit);
-    bool win_battle_at(VoronoiCell2* c);
-    bool danger_at(VoronoiCell2* c);
-    void troops_ai(std::vector<VoronoiCell2*> const& valid);
-    void king_ai(std::vector<VoronoiCell2*> const& valid);
-    void spawn_unit(VoronoiCell2* location, int kingdom);
-    void kill_unit_at(VoronoiCell2* location);
+    bool win_battle_at(Tile* c);
+    bool danger_at(Tile* c);
+    void troops_ai(std::vector<Tile*> const& valid);
+    void king_ai(std::vector<Tile*> const& valid);
+    void spawn_unit(Tile* location, int kingdom);
+    void kill_unit_at(Tile* location);
     void remove_kingdom(int kingdom);
     
     std::vector<Unit> _units;
@@ -90,12 +92,12 @@ class GameCore {
     float _turn_timer;
     void next_turn_state();
     
-    VoronoiCell2* _selected_cell;
+    Tile* _selected_cell;
     
     float _second_timer;
     
     bool _game_over;
-    VoronoiCell2* _winner_location;
+    Tile* _winner_location;
     
     std::vector<int> _sound_queue;
     
@@ -106,7 +108,6 @@ class GameCore {
     
 public:
     GameCore(int view_width, int view_height);
-    ~GameCore();
     
     void mouse_moved(float x, float y);
     void mouse_dragged(MouseButton button, float xrel, float yrel);

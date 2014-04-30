@@ -13,7 +13,6 @@
 #include <vector>
 #include <set>
 #include <map>
-#include <random>
 #include "Geometry.h"
 
 class DelaunayTriangulation {
@@ -157,41 +156,6 @@ public:
             _cells.push_back(it.second);
             for (Point2* n : neighbours[it.first]) {
                 _cells.back()->n.push_back(cells[n]);
-            }
-        }
-        
-        for (VoronoiCell2* c : _cells) {
-            std::vector<Vector2> convex;
-            convex.resize(4);
-            convex[0] = Vector2(-0.5f * width, -0.5f * height);
-            convex[1] = Vector2(0.5f * width, -0.5f * height);
-            convex[2] = Vector2(0.5f * width, 0.5f * height);
-            convex[3] = Vector2(-0.5f * width, 0.5f * height);
-            for (VoronoiCell2* p : c->n) {
-                Vector2 cut = vector_normal(p->p->l - c->p->l);
-                float cut_d = dot(cut, p->p->l - c->p->l) * 0.5f - 0.01f;
-                std::vector<Vector2> tmp_convex;
-                for (int i0 = 0; i0 < convex.size(); ++i0) {
-                    int i1 = i0+1 < convex.size() ? i0+1 : 0;
-                    float d0 = dot(cut, convex[i0] - c->p->l) - cut_d;
-                    float d1 = dot(cut, convex[i1] - c->p->l) - cut_d;
-                    if (d0 <= 0) {
-                        tmp_convex.push_back(convex[i0]);
-                    }
-                    if (sign(d0) != sign(d1)) {
-                        Vector2 res;
-                        intersection(convex[i0], convex[i1] - convex[i0],
-                                     c->p->l + cut * cut_d, Vector2(-cut[1], cut[0]), res);
-                        tmp_convex.push_back(res);
-                    }
-                }
-                convex = tmp_convex;
-            }
-            
-            for (int i = 1; i < (int)convex.size()-1; ++i) {
-                c->vertices.push_back(Vector3(convex[0][0], 0.0f, convex[0][1]));
-                c->vertices.push_back(Vector3(convex[i][0], 0.0f, convex[i][1]));
-                c->vertices.push_back(Vector3(convex[i+1][0], 0.0f, convex[i+1][1]));
             }
         }
     }

@@ -45,12 +45,6 @@ struct VoronoiCell2 {
     
     Point2* p;
     std::vector<VoronoiCell2*> n;
-    std::vector<Vector3> vertices;
-    int building = 0;
-    int type = 1;
-    int coins = 0;
-    int spawn = 0;
-    int kingdom = -1;
 }; // VoronoiCell2
 
 // next index in counter clockwise direction
@@ -80,5 +74,7 @@ std::vector<Vector2> cut(std::vector<Vector2> const& a, std::vector<Vector2> con
 std::vector<Vector2> triangulate(std::vector<Vector2> const& points);
 
 std::vector<Vector2> circle(Vector2 center, float r, int d);
+
+std::vector<Vector3> voronoi_cell_mesh(float width, float height, VoronoiCell2* cell);
 
 #endif /* defined(__LD29__Geometry__) */

@@ -15,24 +15,6 @@ Color4 color_interpolation(Color4 const& color0, Color4 const& color1, float t) 
     return Color4(r[0]*255.0f, r[1]*255.0f, r[2]*255.0f, 255);
 }
 
-std::vector<Vector2> smooth(float width, float height, std::vector<Vector2> const& points) {
-    float const k = 0.01f;
-    std::vector<Vector2> result(points.size());
-    for (int i = 0; i < result.size(); ++i) {
-        Vector2 old = points[i];
-        result[i] = old;
-        for (int j = 0; j < points.size(); ++j) {
-            if (i == j) continue;
-            Vector2 diff = points[j] - old;
-            float len = length(diff);
-            if (len < 1.0f) {
-                result[i] -= k * 1.0f/len * vector_normal(diff);
-            }
-        }
-    }
-    return result;
-}
-
 Vector2 point_on_screen(Matrix4 const& view_projection, Vector3 const& p) {
     Vector4 proj = view_projection * Vector4(p[0], p[1], p[2], 1.0f);
     return Vector2(proj[0]/fabs(proj[3]), proj[1]/fabs(proj[3]));
@@ -64,11 +46,4 @@ bool cursor_on_shape(Matrix4 const& model_view_projection, std::vector<Vector3> 
         }
     }
     return false;
-}
-
-bool valid_cell(VoronoiCell2* c, float cutoff) {
-    if (c->p->l[0] < -cutoff || c->p->l[0] > cutoff || c->p->l[1] < -cutoff || c->p->l[1] > cutoff) {
-        return false;
-    }
-    return true;
 }

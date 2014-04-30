@@ -16,6 +16,7 @@
 		6D74EDAA1911724E00973697 /* GameHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D74EDA81911724E00973697 /* GameHelper.cpp */; };
 		6D74EDAD191173E200973697 /* GameDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D74EDAB191173E200973697 /* GameDraw.cpp */; };
 		6D74EDB01911761700973697 /* GameShapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D74EDAE1911761700973697 /* GameShapes.cpp */; };
+		6D74EDB319118E8500973697 /* GameMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D74EDB119118E8500973697 /* GameMap.cpp */; };
 		6D9B8365190026E50003162D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B8364190026E50003162D /* Cocoa.framework */; };
 		6D9B836F190026E50003162D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B836D190026E50003162D /* InfoPlist.strings */; };
 		6D9B8371190026E50003162D /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B8370190026E50003162D /* main.mm */; };
@@ -78,6 +79,8 @@
 		6D74EDAC191173E200973697 /* GameDraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameDraw.h; sourceTree = "<group>"; };
 		6D74EDAE1911761700973697 /* GameShapes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameShapes.cpp; sourceTree = "<group>"; };
 		6D74EDAF1911761700973697 /* GameShapes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameShapes.h; sourceTree = "<group>"; };
+		6D74EDB119118E8500973697 /* GameMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameMap.cpp; sourceTree = "<group>"; };
+		6D74EDB219118E8500973697 /* GameMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameMap.h; sourceTree = "<group>"; };
 		6D9B8361190026E50003162D /* LD29.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LD29.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D9B8364190026E50003162D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		6D9B8367190026E50003162D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -205,6 +208,8 @@
 				6D74EDAC191173E200973697 /* GameDraw.h */,
 				6D74EDAE1911761700973697 /* GameShapes.cpp */,
 				6D74EDAF1911761700973697 /* GameShapes.h */,
+				6D74EDB119118E8500973697 /* GameMap.cpp */,
+				6D74EDB219118E8500973697 /* GameMap.h */,
 			);
 			path = LD29;
 			sourceTree = "<group>";
@@ -379,6 +384,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D9B83BF190028520003162D /* Matrix.cpp in Sources */,
+				6D74EDB319118E8500973697 /* GameMap.cpp in Sources */,
 				6D74EDAA1911724E00973697 /* GameHelper.cpp in Sources */,
 				6D9B83C3190028520003162D /* Plane3.cpp in Sources */,
 				6D9B83C8190028520003162D /* Vector3.cpp in Sources */,
