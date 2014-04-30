@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "Types.h"
 #include "DelaunayTriangulation.h"
+#include "GameShapes.h"
 
 typedef enum {
     MBLeft,
@@ -40,15 +41,15 @@ class GameCore {
     std::mt19937 _rand_engine;
     
     VoronoiDiagram* _world;
-    std::vector<Vector3> _flag_mesh;
-    std::vector<Vector3> _small_flag_mesh;
-    std::vector<Vector3> _coin_mesh;
-    std::vector<Vector3> _crown_mesh;
-    std::vector<Vector3> _decal_mesh;
-    std::vector<Vector3> _indicator_mesh;
-    std::vector<Vector3> _mine_base_mesh;
-    std::vector<Vector3> _mine_wheel_mesh;
-    std::vector<Vector3> _star_mesh;
+    GLShape _flag_mesh;
+    GLShape _small_flag_mesh;
+    GLShape _coin_mesh;
+    GLShape _crown_mesh;
+    GLShape _decal_mesh;
+    GLShape _indicator_mesh;
+    GLShape _mine_base_mesh;
+    GLShape _mine_wheel_mesh;
+    GLShape _star_mesh;
 
     Color4 _kingdom_colors[4];
     Color4 _kingdom_map_colors[4];

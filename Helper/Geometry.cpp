@@ -386,3 +386,12 @@ std::vector<Vector2> triangulate(std::vector<Vector2> const& points) {
     triangulation.push_back(remaining[2]);
     return triangulation;
 }
+
+std::vector<Vector2> circle(Vector2 center, float r, int d) {
+    std::vector<Vector2> points;
+    float dt = 2.0f * PI / (float)std::max(3, d);
+    for (int i = 0; i < std::max(3, d); ++i) {
+        points.push_back(center + Vector2(r * cosf(i * dt), r * sinf(i * dt)));
+    }
+    return points;
+}

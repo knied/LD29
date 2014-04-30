@@ -13,6 +13,9 @@
 		6D33AF1C190D5FA1003DD010 /* spawn.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6D33AF18190D5FA1003DD010 /* spawn.wav */; };
 		6D33AF20190D6C8E003DD010 /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6D9B83CC190028E70003162D /* SDL2.framework */; };
 		6D33AF24190D8E6B003DD010 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D33AF23190D8E6B003DD010 /* Media.xcassets */; };
+		6D74EDAA1911724E00973697 /* GameHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D74EDA81911724E00973697 /* GameHelper.cpp */; };
+		6D74EDAD191173E200973697 /* GameDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D74EDAB191173E200973697 /* GameDraw.cpp */; };
+		6D74EDB01911761700973697 /* GameShapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6D74EDAE1911761700973697 /* GameShapes.cpp */; };
 		6D9B8365190026E50003162D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D9B8364190026E50003162D /* Cocoa.framework */; };
 		6D9B836F190026E50003162D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6D9B836D190026E50003162D /* InfoPlist.strings */; };
 		6D9B8371190026E50003162D /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6D9B8370190026E50003162D /* main.mm */; };
@@ -69,6 +72,12 @@
 		6D33AF17190D5FA1003DD010 /* move.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = move.wav; sourceTree = "<group>"; };
 		6D33AF18190D5FA1003DD010 /* spawn.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = spawn.wav; sourceTree = "<group>"; };
 		6D33AF23190D8E6B003DD010 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		6D74EDA81911724E00973697 /* GameHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameHelper.cpp; sourceTree = "<group>"; };
+		6D74EDA91911724E00973697 /* GameHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameHelper.h; sourceTree = "<group>"; };
+		6D74EDAB191173E200973697 /* GameDraw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameDraw.cpp; sourceTree = "<group>"; };
+		6D74EDAC191173E200973697 /* GameDraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameDraw.h; sourceTree = "<group>"; };
+		6D74EDAE1911761700973697 /* GameShapes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameShapes.cpp; sourceTree = "<group>"; };
+		6D74EDAF1911761700973697 /* GameShapes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameShapes.h; sourceTree = "<group>"; };
 		6D9B8361190026E50003162D /* LD29.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LD29.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D9B8364190026E50003162D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		6D9B8367190026E50003162D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -190,6 +199,12 @@
 				6D9B836B190026E50003162D /* Supporting Files */,
 				6D9DE8B1190BB55100D245CE /* GameCore.cpp */,
 				6D9DE8B2190BB55100D245CE /* GameCore.h */,
+				6D74EDA81911724E00973697 /* GameHelper.cpp */,
+				6D74EDA91911724E00973697 /* GameHelper.h */,
+				6D74EDAB191173E200973697 /* GameDraw.cpp */,
+				6D74EDAC191173E200973697 /* GameDraw.h */,
+				6D74EDAE1911761700973697 /* GameShapes.cpp */,
+				6D74EDAF1911761700973697 /* GameShapes.h */,
 			);
 			path = LD29;
 			sourceTree = "<group>";
@@ -364,6 +379,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D9B83BF190028520003162D /* Matrix.cpp in Sources */,
+				6D74EDAA1911724E00973697 /* GameHelper.cpp in Sources */,
 				6D9B83C3190028520003162D /* Plane3.cpp in Sources */,
 				6D9B83C8190028520003162D /* Vector3.cpp in Sources */,
 				6D9B83A11900283B0003162D /* SDLClasses.cpp in Sources */,
@@ -372,12 +388,14 @@
 				6DDECEB01903BE5600F3B6B0 /* Camera.cpp in Sources */,
 				6D9B8371190026E50003162D /* main.mm in Sources */,
 				6D9B83C0190028520003162D /* Matrix2.cpp in Sources */,
+				6D74EDAD191173E200973697 /* GameDraw.cpp in Sources */,
 				6D9B83C4190028520003162D /* Quaternion.cpp in Sources */,
 				6D9B83BE190028520003162D /* MathUtility.cpp in Sources */,
 				6D9B83C7190028520003162D /* Vector2.cpp in Sources */,
 				6D9B83C6190028520003162D /* Vector.cpp in Sources */,
 				6D9B83C1190028520003162D /* Matrix3.cpp in Sources */,
 				6D9B83C5190028520003162D /* Transformation3.cpp in Sources */,
+				6D74EDB01911761700973697 /* GameShapes.cpp in Sources */,
 				6D9B83C9190028520003162D /* Vector4.cpp in Sources */,
 				6DDECEB6190435FC00F3B6B0 /* Geometry.cpp in Sources */,
 				6D9B83BD190028520003162D /* Math.cpp in Sources */,

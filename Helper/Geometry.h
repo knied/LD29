@@ -79,4 +79,6 @@ bool segment_intersection(Vector2 const& p0, Vector2 const& p1, Vector2 const& q
 std::vector<Vector2> cut(std::vector<Vector2> const& a, std::vector<Vector2> const& b);
 std::vector<Vector2> triangulate(std::vector<Vector2> const& points);
 
+std::vector<Vector2> circle(Vector2 center, float r, int d);
+
 #endif /* defined(__LD29__Geometry__) */
